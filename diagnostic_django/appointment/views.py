@@ -9,9 +9,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .view_manager import AppointmentManager
-from users.models import Customer, Staff, User
+from users.models import Customer, Staff , User
 from users.serializers import EmployeeSerializer
-from .models import *
+from .models import Branch , Appointment , Lab , Bill , Test ,Review,Report
 from .serializers import *
 
 
@@ -63,21 +63,20 @@ class AppointmentAPI(APIView):
                     serializer = TestSerializer(each_appointment_tests, many=True)
                     appointments_tests.append(json.dumps(serializer.data))
                 # appointments_tests = AppointmentManager.get_appointments_related_all_tests(list(appointments))
-                appointments = appointments.values(
-                    'appointment_id', 'user__customer_id', 'user__user_id__username', 'date', 'slot',
-                    'doctor_id__staff_id', 'doctor_id__user_id__username',
-                    'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
-                    'lab_technician__user_id__username',
-                    'sample_collector__staff_id', 'sample_collector__user_id__username', 'status'
-                )
-
+                # appointments = appointments.values(
+                #     'appointment_id', 'user__customer_id', 'user__user_id__username', 'date', 'slot',
+                #     '   doctor_id__staff_id', 'doctor_id__user_id__username',
+                #     'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
+                #     'lab_technician__user_id__username',
+                #     'sample_collector__staff_id', 'sample_collector__user_id__username', 'status'
+                # )
                 serializer = AppointmentSerializer(appointments, many=True)
             else:
                 appointment = Appointment.objects.get(appointment_id=id)
                 serializer = AppointmentSerializer(appointment, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response({'appointments': json.dumps(serializer.data), 'related_tests': appointments_tests}, status=200)
+        return Response({'appointments': serializer.data, 'related_tests': appointments_tests}, status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
@@ -87,20 +86,18 @@ class AppointmentAPI(APIView):
         # data = request.data
         username = request.data.get('username')
         # username = request.data['username']
-        print(username)
         user = User.objects.get(username=username)
-        print(user)
         customer = Customer.objects.get(user_id=user.id)
-        print(customer)
         data['user'] = customer.customer_id
-        data['branch'] = None
+        data['branch'] = Branch.objects.get(branch_id = data['branch'])
+        # data['user'] = customer.customer_id
+
+        print(data)
         data['doctor_id'] = None
         data['nurse_id'] = None
         data['lab_technician'] = None
         data['sample_collector'] = None
-        print(data)
         apmt = AppointmentSerializer(data=data)
-        print(apmt)
         if apmt.is_valid():
             apmt.save()
             return Response({"message": "appointment_booked"}, status=200)

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AdminSeriveService } from '../../admin-service.service';
 
 @Component({
   selector: 'app-display-appointments',
@@ -7,9 +8,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DisplayAppointmentsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private http: AdminSeriveService) { }
+  displayedColumns: string[] = ['appointment', 'user', 'branch', 'date', "slot", "doctor", "nurse", "lab_technician", "sample_collector", "status", "update", 'delete'];
+  appointments: any
 
   ngOnInit(): void {
+    this.http.getAppointments().subscribe({
+      next: (resp) => {
+        this.appointments = resp.appointments 
+        console.log(this.appointments);
+        
+      },
+      error: (err) => {
+        console.log(err.data);
+      }
+    })
   }
 
 }

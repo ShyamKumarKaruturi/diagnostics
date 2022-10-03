@@ -29,7 +29,8 @@ export class LoginComponent implements OnInit {
             console.log(resp)
             this.errorMessage = resp.msg
             if (this.errorMessage == "logged in") {
-              this.http.saveData("username", resp.user)
+              this.http.saveData("username", resp.user.username)
+              this.http.saveData("user_type", resp.user.user_type)
               // console.log(this.http.getData('username'));
               localStorage.setItem('user', JSON.stringify(resp.user))
               this.router.navigate([''])

@@ -1,10 +1,10 @@
-<form [formGroup]="bookAppointmentForm" class="form-container">
-  <mat-card>
+<form style="margin-top: 5%;" [formGroup]="bookAppointmentForm" class="form-container">
+  <mat-card style="background-color: #eee5f390;"  >
     <mat-card-header>
-      <mat-card-title>Book Appointment</mat-card-title>
-      <!-- <mat-card-title *ngIf="formNotValid"
-        >please Fill All required details</mat-card-title
-      > -->
+      <mat-card-title style="color: #7710ab">Book Appointment</mat-card-title>
+      <small style="color: red" *ngIf="errorMessage"
+        >please Fill All required details</small
+      >
     </mat-card-header>
     <br />
     <mat-card-content>
@@ -12,7 +12,7 @@
       <div class="col-md-6">
         
         <mat-form-field class="full-width" appearance="fill">
-          <mat-label>Doctor</mat-label>
+          <mat-label>Slot</mat-label>
           <mat-select formControlName="slot" required>
             <mat-option>--</mat-option>
             <mat-option *ngFor="let slot of slots" [value]="slot">
@@ -26,7 +26,7 @@
           bookAppointmentForm.get('slot')?.touched ||
           bookAppointmentForm.get('slot')?.invalid
         "
-        >please select Doctor</small
+        >please select Slot</small
       >
       <!-- select end  -->
       <div class="col-md-6">
@@ -55,8 +55,9 @@
       
     </mat-card-content>
     <mat-card-actions>
-      <button (click)="bookAppointment()" mat-raised-button="" color="primary">
-        Register
+      <button style="color: #3f1651; background-color: #c3a1d5"
+     (click)="bookAppointment()" mat-raised-button="" color="primary">
+        Book
       </button>
     </mat-card-actions>
   </mat-card>
