@@ -12,6 +12,7 @@ from appointment.models import Branch
 from appointment.serializers import BranchSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
+from .authentication import *
 
 
 # @api_view(['POST','PUT'])
@@ -123,9 +124,14 @@ def loginUser(request):
         except:
             return Response({'msg': "User Does not Exist"})
 
-        user = authenticate(request, username=username, password=password)
+        # password_check = user.check_password(password)
+        # if not password_check:
+        #     return Response({'msg': "Incorrect Password"})
+        user = authenticate(request, username=username, password=password) #
+        # access_token = create_access_token(user.username)
+        # refresh_token = create_refresh_token(user.username)
         if user is not None:
-            login(request, user)
+            login(request, user) #
             user = UserSerializer(instance=user, many=False)
             return Response({'msg': "logged in", 'user': user.data}, status=200)
         else:
