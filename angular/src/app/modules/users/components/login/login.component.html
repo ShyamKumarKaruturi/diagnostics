@@ -1,5 +1,5 @@
 <form style="margin-top: 5%" [formGroup]="loginForm" class="form-container">
-  <mat-card style="background-color: #eee5f390;">
+  <mat-card style="background-color: #eee5f390">
     <mat-card-header>
       <mat-card-title style="color: #7710ab">Login</mat-card-title>
       {{ errorMessage }}
@@ -27,7 +27,22 @@
 
       <div class="col-md-6">
         <mat-form-field class="full-width">
-          <input formControlName="password" matInput placeholder="password" />
+          <input
+            formControlName="password"
+            matInput
+            placeholder="password"
+            [type]="hide ? 'password' : 'text'"
+            placeholder="password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="hide = !hide"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide"
+          >
+            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+          </button>
         </mat-form-field>
 
         <small
@@ -44,7 +59,7 @@
       <button
         (click)="submitLogin()"
         mat-raised-button=""
-        style="color: #3f1651; background-color: #c3a1d5;margin-left: 3%;"
+        style="color: #3f1651; background-color: #c3a1d5; margin-left: 3%"
       >
         login
       </button>
