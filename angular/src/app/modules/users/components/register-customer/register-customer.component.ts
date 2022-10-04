@@ -22,9 +22,9 @@ export class RegisterCustomerComponent implements OnInit {
     email: new FormControl("", [Validators.required, Validators.email]),
     mobile_number: new FormControl("", [Validators.maxLength(12), Validators.required]),
     age: new FormControl("", Validators.required),
-    address: new FormControl(""),
-    pincode: new FormControl("", Validators.maxLength(6)),
-    password: new FormControl("", Validators.minLength(8)),
+    address: new FormControl("", Validators.required),
+    pincode: new FormControl("", [Validators.maxLength(6), Validators.required]),
+    password: new FormControl("", [Validators.minLength(8), Validators.required]),
     // password1: new FormControl(" ", Validators.minLength(8))
   })
   ngOnInit(): void {

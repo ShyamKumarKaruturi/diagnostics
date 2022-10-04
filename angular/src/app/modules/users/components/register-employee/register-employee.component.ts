@@ -14,7 +14,6 @@ export class RegisterEmployeeComponent implements OnInit {
   formNotValid: boolean = false
   errorMessage: string = ""
   designations: string[] = ['Doctor', 'Nurse', 'Lab Technician', 'Sample Collector', 'Receptionist']
-  status: string[] = ["occupied", "available"]
   branches : any
   branchIdList : string[] =[]
   user_data : any
@@ -53,6 +52,7 @@ export class RegisterEmployeeComponent implements OnInit {
 
   submitRegister() {
     if (this.employeeRegisterForm.valid && this.designationControl.valid && this.branchControl.valid ) {
+      this.formNotValid = false
       this.user_data = { ...this.employeeRegisterForm.value  ,"branch": this.branchControl.value, 'designation': this.designationControl.value}
       this.http.registerEmployee(this.user_data).subscribe(data => {
         console.log(data)

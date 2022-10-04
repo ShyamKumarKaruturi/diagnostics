@@ -44,6 +44,8 @@ import { DisplayReviewsComponent } from './components/reviews/display-reviews/di
 import { NewReviewComponent } from './components/reviews/new-review/new-review.component';
 import { NewTestComponent } from './components/tests/new-test/new-test.component';
 import { DisplayTestsComponent } from './components/tests/display-tests/display-tests.component';
+import { AdminNavigationComponent } from './components/admin-navigation/admin-navigation.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 
 
@@ -73,6 +75,7 @@ import { DisplayTestsComponent } from './components/tests/display-tests/display-
     NewReviewComponent,
     NewTestComponent,
     DisplayTestsComponent,
+    AdminNavigationComponent,
   ],
   imports: [
     CommonModule,
@@ -93,6 +96,7 @@ import { DisplayTestsComponent } from './components/tests/display-tests/display-
     MatSortModule,
     MatTableModule,
     MatExpansionModule,
+    MatToolbarModule
   ],
   bootstrap: [
   ]

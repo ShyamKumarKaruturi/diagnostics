@@ -3,22 +3,25 @@ th {
   font-size:14px;
   background-color: #eee5f390;
 }
-td {
-  text-align:justify;
-}
+
 .mat-expansion-panel-header {
   height: 30px;
   width: 50px;
 }
 .table-container
 {
-  max-width: fit-content;
+  width: 100%;
 }
 h4
 {
   margin-bottom: 2px;
   padding-bottom: 1px;
 }
-.mat-cell{
+.mat-cell , .mat-header-cell{
+  text-align: left;
+}
+
+.table{
+  width: 100%;
   text-align: center;
 }

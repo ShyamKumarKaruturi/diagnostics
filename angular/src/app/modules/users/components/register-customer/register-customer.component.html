@@ -3,8 +3,8 @@
     <mat-card-header>
       <mat-card-title style="color: #7710ab;">Register Customer</mat-card-title>
       {{ errorMessage }}
-      <mat-card-title style="color: red; margin-left: 1.5%;"  *ngIf="formNotValid"
-        >please Fill All required details</mat-card-title
+      <mat-card-title style="color: red; margin-left: 1.5%;font-size: 13px; width: 100%;"  *ngIf="formNotValid"
+        >please fill all details</mat-card-title
       >
     </mat-card-header>
     <br />
@@ -69,7 +69,7 @@
       </div>
       <div class="col-md-6">
         <mat-form-field class="full-width">
-          <input
+          <input type="number"
             formControlName="mobile_number"
             matInput
             placeholder="mobile_number"
@@ -86,7 +86,7 @@
       </div>
       <div class="col-md-6">
         <mat-form-field class="full-width">
-          <input formControlName="age" matInput placeholder="age" />
+          <input type="number" formControlName="age" matInput placeholder="age in number" />
         </mat-form-field>
         <small
           class="text-danger"
@@ -94,7 +94,7 @@
             customerRegisterForm.get('age')?.invalid &&
             customerRegisterForm.get('age')?.touched
           "
-          >hello</small
+          >please enter age</small
         >
       </div>
       <div class="col-md-6">
@@ -108,19 +108,19 @@
             customerRegisterForm.get('address')?.invalid &&
             customerRegisterForm.get('address')?.touched
           "
-          >hello</small
+          >please enter address</small
         >
       </div>
       <div class="col-md-6">
         <mat-form-field class="full-width">
-          <input formControlName="pincode" matInput placeholder="pincode" />
+          <input type="number" formControlName="pincode" matInput placeholder="pincode" />
           <small
             class="text-danger"
             *ngIf="
               customerRegisterForm.get('pincode')?.invalid &&
-              customerRegisterForm.get('pincode-')?.touched
+              customerRegisterForm.get('pincode')?.touched
             "
-            >hello</small
+            >please enter pincode</small
           >
         </mat-form-field>
       </div>

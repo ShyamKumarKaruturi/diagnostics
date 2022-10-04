@@ -1,1 +1,74 @@
-<p>new-branch works!</p>
+<form style="margin-top: 5%" [formGroup]="branchForm" class="form-container">
+  <mat-card style="background-color: #eee5f390">
+    <mat-card-header>
+      <mat-card-title style="color: #7710ab">Add New Branch</mat-card-title>
+      {{ responseMessage }}
+      <span *ngIf="formNotValid">please Fill All required details</span>
+    </mat-card-header>
+    <br />
+    <mat-card-content>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width">
+            <input
+              formControlName="branch_id"
+              matInput
+              placeholder="branch id"
+            />
+          </mat-form-field>
+          <small
+            class="text-danger"
+            *ngIf="
+              branchForm.get('branch_id')?.invalid &&
+              branchForm.get('branch_id')?.touched
+            "
+            >Please enter branch id</small
+          >
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field class="full-width">
+          <input
+            formControlName="branch_name"
+            matInput
+            placeholder="branch_name"
+            placeholder="branch_name"
+          />
+        </mat-form-field>
+
+        <small
+          class="text-danger"
+          *ngIf="
+            branchForm.get('branch_name')?.invalid &&
+            branchForm.get('branch_name')?.touched
+          "
+          >Please enter branch_name</small
+        >
+      </div>
+      <div class="col-md-6">
+        <mat-form-field class="full-width">
+          <input formControlName="location" matInput placeholder="location" />
+        </mat-form-field>
+
+        <small
+          class="text-danger"
+          *ngIf="
+            branchForm.get('location')?.invalid &&
+            branchForm.get('location')?.touched
+          "
+          >Please enter location</small
+        >
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        (click)="onSubmit()"
+        mat-raised-button=""
+        style="color: #3f1651; background-color: #c3a1d5; margin-left: 3%"
+      >
+        Add
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>

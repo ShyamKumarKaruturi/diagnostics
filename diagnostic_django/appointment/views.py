@@ -91,7 +91,7 @@ class AppointmentAPI(APIView):
         user = User.objects.get(username=username)
         customer = Customer.objects.get(user_id=user.id)
         data['user'] = customer.customer_id
-        data['branch'] = Branch.objects.get(branch_id=data['branch'])
+        # data['branch'] = Branch.objects.get(branch_id=data['branch'])
         # data['user'] = customer.customer_id
 
         print(data)
@@ -133,33 +133,32 @@ class BranchAPI(APIView):
     def get(request, id=""):
         try:
             if id == "":
-                branches = list(Branch.objects.all().values(
-                    'branch_id', 'branch_name', 'location'
-                ))
-                # serializer = BranchSerializer(branches, many=True)
+                branches = Branch.objects.all()
+                serializer = BranchSerializer(branches, many=True)
             else:
                 branch = Branch.objects.get(appointment_id=id)
                 serializer = BranchSerializer(branch, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response(json.dumps(branches), status=200)
+        return Response(serializer.data, status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
     def post(request):
         print(request.data)
         data = request.data.get('form')
-        # data = request.data
-        # username = request.data.get('username')
-        # username = request.data['username']
-        print(data)
-        serializer = BranchSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "New Branch Created"}, status=200)
-        else:
-            return Response({"message": "appointment not booked"}, status=500)
-        # return Response({"message":"appointment not booked"} , status = 200 )
+        try:
+            branch = Branch.objects.get(branch_id= branch_id)
+            return Response({"message": "Branch Already exist" , "action_status": "failure"}, status=200)
+
+        except:
+            serializer = BranchSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "New Branch Created", "action_status": "success"}, status=200)
+            else:
+                return Response({"message": "there is some issure, please try again later", "action_status": "failure"}, status=500)
+            # return Response({"message":"appointment not booked"} , status = 200 )
 
     @staticmethod
     def put(request):
@@ -189,33 +188,36 @@ class LabAPI(APIView):
         try:
             if id == "":
                 labs = list(Lab.objects.all().values(
-                    'lab_id', 'lab_number', 'lab_type', 'lab_name', 'lab_status', 'branch__branch_id',
+                    'lab_id', 'lab_name',  'branch__branch_id',
                     'branch__branch_name'
                 ))
                 # serializer = LabSerializer(labs, many=True)
             else:
-                lab = Lab.objects.get(appointment_id=id)
-                serializer = LabSerializer(lab, many=False)
+                labs = Lab.objects.get(appointment_id=id).values('lab_id', 'lab_name',  'branch__branch_id'
+                                                                 ,'branch__branch_name')
+                serializer = LabSerializer(labs, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response(json.dumps(labs), status=200)
+        return Response({'labs':json.dumps(labs)}, status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
     def post(request):
         print(request.data)
         data = request.data.get('form')
-        # data = request.data
-        # username = request.data.get('username')
-        # username = request.data['username']
+        lab_id = data['lab_id']
         print(data)
-        serializer = LabSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "New Branch Created"}, status=200)
-        else:
-            return Response({"message": "appointment not booked"}, status=500)
-        # return Response({"message":"appointment not booked"} , status = 200 )
+        try:
+            lab = Lab.objects.get(lab_id=lab_id)
+            return Response({"message": "Lab Already exist" , "action_status": "failure"}, status=200)
+        except:
+            serializer = LabSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "New Lab Created" , "action_status": "success"}, status=200)
+            else:
+                return Response({"message": "there is some issure, please try again later" , "action_status": "failure"}, status=500)
+            # return Response({"message":"appointment not booked"} , status = 200 )
 
     @staticmethod
     def put(request):
@@ -260,19 +262,19 @@ class TestAPI(APIView):
     def post(request):
         print(request.data)
         data = request.data.get('form')
-        lab = data['lab']
-        data['lab'] = None
-        # data = request.data
-        # username = request.data.get('username')
-        # username = request.data['username']
-        print(data)
-        serializer = TestSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "New Test Created"}, status=200)
-        else:
-            return Response({"message": "appointment not booked"}, status=500)
-        # return Response({"message":"appointment not booked"} , status = 200 )
+        test_id = data['test_id']
+        try:
+            test = Test.objects.get(test_id=test_id)
+            return Response({"message": "Test Already exist" , "action_status": "failure"}, status=200)
+        except:
+            print(data)
+            serializer = TestSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "New Test Created", "action_status": "success"}, status=200)
+            else:
+                return Response({"message": "there is some issure, please try again later", "action_status": "failure"}, status=500)
+            # return Response({"message":"appointment not booked"} , status = 200 )
 
     @staticmethod
     def put(request):

@@ -17,7 +17,7 @@ class BranchSerializer(serializers.ModelSerializer):
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Test
-        fields = ['test_id', 'test_type', 'test_name', 'test_description']
+        fields = ['test_id', 'test_name', 'test_description' , 'lab']
 
 
 class ReviewSerializer(serializers.ModelSerializer):

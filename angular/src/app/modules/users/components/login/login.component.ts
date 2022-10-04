@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpServiceService } from '../../http-service.service';
-import { retry, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
@@ -23,6 +22,8 @@ export class LoginComponent implements OnInit {
   }
   submitLogin() {
     if (this.loginForm.valid) {
+      this.formNotValid = false
+
       this.http.loginUser(this.loginForm.value).subscribe({
         next: (resp) => {
           console.log(resp);
