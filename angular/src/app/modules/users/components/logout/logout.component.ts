@@ -17,6 +17,8 @@ export class LogoutComponent implements OnInit {
     this.http.logoutUser({ 'username': this.username }).subscribe(data =>{
       console.log(data);
       this.http.removeData("username")
+      this.http.removeData("user_type")
+      this.http.removeData("user")
       this.router.navigate([''])
 
 
