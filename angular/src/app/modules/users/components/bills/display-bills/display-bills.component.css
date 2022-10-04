@@ -1,0 +1,24 @@
+th {
+  color: #7710ab;
+  font-size:14px;
+  background-color: #eee5f390;
+}
+td {
+  text-align:justify;
+}
+.mat-expansion-panel-header {
+  height: 30px;
+  width: 50px;
+}
+.table-container
+{
+  max-width: fit-content;
+}
+h4
+{
+  margin-bottom: 2px;
+  padding-bottom: 1px;
+}
+.mat-cell{
+  text-align: center;
+}

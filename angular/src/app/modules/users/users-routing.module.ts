@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BookAppointmentComponent } from './components/appointments/book-appointment/book-appointment.component';
 import { DisplayAppointmentsComponent } from './components/appointments/display-appointments/display-appointments.component';
+import { DisplayBillsComponent } from './components/bills/display-bills/display-bills.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
@@ -15,7 +16,8 @@ const routes: Routes = [
     { path: 'login', component: LoginComponent},
     { path: 'logout', component: LogoutComponent },
     { path: 'book-appointment', component: BookAppointmentComponent },
-    {path:'display-appointments',component: DisplayAppointmentsComponent},
+    { path: 'display-appointments', component: DisplayAppointmentsComponent },
+    { path: 'display-bills', component: DisplayBillsComponent},
 
     {path : '', redirectTo:'register-customer',pathMatch:"full"}
   ]}

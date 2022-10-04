@@ -13,11 +13,11 @@ export class AppointmentsService {
   // Appointments Services.
 
   getAppointments(): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/appointment/'}`);
+    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`);
   }
 
   getAppointment(id: any): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/appointment/'}`, id);
+    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`, id);
   }
 
   setAppointment(data: any) {
