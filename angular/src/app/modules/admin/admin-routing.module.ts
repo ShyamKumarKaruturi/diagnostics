@@ -6,8 +6,8 @@ import { DisplayAppointmentsComponent } from './components/display-appointments/
 const routes: Routes = [
   {
     path: "", component: DashboardComponent, children: [
-      { path: 'display-appointmets', component: DisplayAppointmentsComponent },
-      { path: '', redirectTo: 'display-appointmets', pathMatch: "full" }
+      { path: 'display-appointments', component: DisplayAppointmentsComponent },
+      { path: '', redirectTo: 'display-appointments', pathMatch: "full" }
     ]
   }
 ];

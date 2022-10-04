@@ -26,6 +26,9 @@ import { CommonModule } from '@angular/common';
 import { UsersRoutingModule } from './modules/users/users-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UsersModule } from './modules/users/users.module';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+
 
 @NgModule({
   declarations: [
@@ -33,6 +36,7 @@ import { UsersModule } from './modules/users/users.module';
     HomeComponent,
     AboutComponent,
     NotFoundComponent,
+    NavbarComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,7 +56,8 @@ import { UsersModule } from './modules/users/users.module';
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatIconModule
+    MatIconModule,
+    MatToolbarModule
   ],
   providers: [HttpServiceService],
   bootstrap: [AppComponent]

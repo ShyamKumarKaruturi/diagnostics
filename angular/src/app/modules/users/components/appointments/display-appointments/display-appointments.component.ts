@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatAccordion } from '@angular/material/expansion';
 
 import { AppointmentsService } from 'src/app/services/appointments-service/appointments.service';
 
@@ -10,7 +11,7 @@ export interface AppointmentData {
   appointment_id: string;
   customer_id: string;
   customer_name: string;
-  date: string;
+  // date: string;
   slot: string;
   tests: string;
   doctor_id: string;
@@ -24,20 +25,19 @@ export interface AppointmentData {
   status: string;
 }
 
-
 @Component({
   selector: 'app-display-appointments',
   templateUrl: './display-appointments.component.html',
   styleUrls: ['./display-appointments.component.css'],
 })
-
 export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
-
   appointments: any;
-  dataSource : MatTableDataSource<AppointmentData>;
+  tests: any;
+  dataSource: MatTableDataSource<AppointmentData>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatAccordion) accordion!: MatAccordion;
 
   constructor(private appointments_service: AppointmentsService) {
     this.dataSource = new MatTableDataSource(this.appointments);
@@ -47,9 +47,8 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
     'appointment id',
     'customer id',
     'customer name',
-    'date',
+    // 'date',
     'slot',
-    // 'tests',
     'doctor id',
     'doctor',
     'nurse id',
@@ -59,19 +58,26 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
     'sample collector id',
     'sample collector',
     'status',
+    'tests',
+    'delete',
+    'update',
   ];
 
   ngOnInit(): void {
     this.appointments_service.getAppointments().subscribe({
-      next: (data:any) => {
+      next: (data: any) => {
         console.log(data);
         this.appointments = data.appointments;
-        console.log("Before",this.appointments)
+        this.tests = data.related_tests;
+        this.tests = JSON.parse(this.tests);
+        console.log('Before', this.appointments);
         this.appointments = JSON.parse(this.appointments);
-        console.log("After",this.appointments)
+        console.log('After', this.appointments, this.tests);
+        this.dataSource.data = this.appointments;
+        console.log(this.dataSource);
       },
       error: (err) => {
-        alert(err);
+        console.log(err);
       },
     });
   }

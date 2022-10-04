@@ -43,7 +43,9 @@ class RegisterCustomer(APIView):
             print(user)
             return Response({'message': "User  Exist"})
         except:
-            serializer = UserSerializer(data=request.data)
+            data = request.data
+            data['user_type'] = 'customer'
+            serializer = UserSerializer(data=data)
             print(serializer)
             if serializer.is_valid():
                 user = serializer.save()
@@ -66,7 +68,6 @@ class RegisterCustomer(APIView):
 
 class RegisterEmployee(APIView):
     def post(self, request):
-        print(request.data)
         username = request.data['username']
         try:
             user = User.objects.get(username=username)
@@ -78,7 +79,7 @@ class RegisterEmployee(APIView):
                       'last_name': request.data["last_name"], 'email': request.data['email'],
                       "mobile_number": request.data["mobile_number"], "age": int(request.data['age']),
                       'address': request.data['address'], "pincode": request.data['pincode'],
-                      "password": request.data['password'], "is_employee": True})
+                      "password": request.data['password'], "user_type": 'staff'})
             print(serializer)
             if serializer.is_valid():
                 user = serializer.save()

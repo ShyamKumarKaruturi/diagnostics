@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from .view_manager import AppointmentManager
 from users.models import Customer, Staff, User
 from users.serializers import EmployeeSerializer
-from .models import *
+from .models import Branch, Appointment, Lab, Bill, Test, Review, Report
 from .serializers import *
 
 
@@ -57,27 +57,28 @@ class AppointmentAPI(APIView):
                 appointments = Appointment.objects.all()
                 appointments_tests = []
                 for appointment in appointments:
-                    each_appointment_tests = appointment.tests.all().values(
+                    each_appointment_tests = list(appointment.tests.all().values(
                         'test_id', 'test_type', 'test_name', 'test_description'
-                    )
-                    serializer = TestSerializer(each_appointment_tests, many=True)
-                    appointments_tests.append(json.dumps(serializer.data))
+                    ))
+                    # serializer = TestSerializer(each_appointment_tests, many=True)
+                    appointments_tests.append(each_appointment_tests)
+                appointments_tests_data = json.dumps(appointments_tests)
                 # appointments_tests = AppointmentManager.get_appointments_related_all_tests(list(appointments))
-                appointments = appointments.values(
-                    'appointment_id', 'user__customer_id', 'user__user_id__username', 'date', 'slot',
+                appointments = list(appointments.values(
+                    'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot',
                     'doctor_id__staff_id', 'doctor_id__user_id__username',
                     'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
                     'lab_technician__user_id__username',
-                    'sample_collector__staff_id', 'sample_collector__user_id__username', 'status'
-                )
-
-                serializer = AppointmentSerializer(appointments, many=True)
+                    'sample_collector__staff_id', 'sample_collector__user_id__username', 'status',
+                ))
+                # serializer = AppointmentSerializer(appointments, many=True)
             else:
                 appointment = Appointment.objects.get(appointment_id=id)
                 serializer = AppointmentSerializer(appointment, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response({'appointments': json.dumps(serializer.data), 'related_tests': appointments_tests}, status=200)
+        return Response({'appointments': json.dumps(appointments), 'related_tests': appointments_tests_data},
+                        status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
@@ -87,20 +88,18 @@ class AppointmentAPI(APIView):
         # data = request.data
         username = request.data.get('username')
         # username = request.data['username']
-        print(username)
         user = User.objects.get(username=username)
-        print(user)
         customer = Customer.objects.get(user_id=user.id)
-        print(customer)
         data['user'] = customer.customer_id
-        data['branch'] = None
+        data['branch'] = Branch.objects.get(branch_id=data['branch'])
+        # data['user'] = customer.customer_id
+
+        print(data)
         data['doctor_id'] = None
         data['nurse_id'] = None
         data['lab_technician'] = None
         data['sample_collector'] = None
-        print(data)
         apmt = AppointmentSerializer(data=data)
-        print(apmt)
         if apmt.is_valid():
             apmt.save()
             return Response({"message": "appointment_booked"}, status=200)
@@ -134,14 +133,16 @@ class BranchAPI(APIView):
     def get(request, id=""):
         try:
             if id == "":
-                branches = Branch.objects.all()
-                serializer = BranchSerializer(branches, many=True)
+                branches = list(Branch.objects.all().values(
+                    'branch_id', 'branch_name', 'location'
+                ))
+                # serializer = BranchSerializer(branches, many=True)
             else:
                 branch = Branch.objects.get(appointment_id=id)
                 serializer = BranchSerializer(branch, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response(serializer.data, status=200)
+        return Response(json.dumps(branches), status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
@@ -187,14 +188,17 @@ class LabAPI(APIView):
     def get(request, id=""):
         try:
             if id == "":
-                labs = Lab.objects.all()
-                serializer = LabSerializer(labs, many=True)
+                labs = list(Lab.objects.all().values(
+                    'lab_id', 'lab_number', 'lab_type', 'lab_name', 'lab_status', 'branch__branch_id',
+                    'branch__branch_name'
+                ))
+                # serializer = LabSerializer(labs, many=True)
             else:
                 lab = Lab.objects.get(appointment_id=id)
                 serializer = LabSerializer(lab, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response(serializer.data, status=200)
+        return Response(json.dumps(labs), status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
@@ -240,14 +244,16 @@ class TestAPI(APIView):
     def get(request, id=""):
         try:
             if id == "":
-                tests = Test.objects.all()
-                serializer = LabSerializer(tests, many=True)
+                tests = list(Test.objects.all().values(
+                    'test_id', 'test_type', 'test_name', 'test_description', 'lab__lab_id', 'lab__lab_name'
+                ))
+                # serializer = LabSerializer(tests, many=True)
             else:
                 test = Test.objects.get(test_id=id)
                 serializer = TestSerializer(test, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response(serializer.data, status=200)
+        return Response(json.dumps(tests), status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
@@ -295,14 +301,16 @@ class ReviewAPI(APIView):
     def get(request, id=""):
         try:
             if id == "":
-                reviews = Review.objects.all()
-                serializer = ReviewSerializer(reviews, many=True)
+                reviews = list(Review.objects.all().values(
+                    'id', 'user_id__username', 'rating', 'comment'
+                ))
+                # serializer = ReviewSerializer(reviews, many=True)
             else:
                 review = Review.objects.get(test_id=id)
                 serializer = ReviewSerializer(review, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response(serializer.data, status=200)
+        return Response(json.dumps(reviews), status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
@@ -348,14 +356,17 @@ class BillAPI(APIView):
     def get(request, id=""):
         try:
             if id == "":
-                bills = Bill.objects.all()
-                serializer = BillSerializer(bills, many=True)
+                bills = list(Bill.objects.all().values(
+                    'id', 'appointment__appointment_id', 'appointment__user__username',
+                    'consultation_fee', 'test_fee', 'tax', 'total'
+                ))
+                # serializer = BillSerializer(bills, many=True)
             else:
                 bill = Bill.objects.get(id=id)
                 serializer = BillSerializer(bill, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response(serializer.data, status=200)
+        return Response(json.dumps(bills), status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
@@ -401,14 +412,17 @@ class ReportAPI(APIView):
     def get(request, id=""):
         try:
             if id == "":
-                reports = Report.objects.all()
-                serializer = ReportSerializer(reports, many=True)
+                reports = list(Report.objects.all().values(
+                    'id', 'appointment__appointment_id', 'appointment__user__username',
+                    'description', 'report_type'
+                ))
+                # serializer = ReportSerializer(reports, many=True)
             else:
                 report = Report.objects.get(id=id)
                 serializer = ReportSerializer(report, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response(serializer.data, status=200)
+        return Response(json.dumps(reports), status=200)
         # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
