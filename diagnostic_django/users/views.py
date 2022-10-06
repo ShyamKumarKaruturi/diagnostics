@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from users.serializers import UserSerializer, CustomerSerializer, EmployeeSerializer
-from .models import User, Customer
+from .models import User, Customer, Staff
 from appointment.models import Branch
 from appointment.serializers import BranchSerializer
 from django.views.decorators.csrf import csrf_exempt
@@ -127,8 +127,15 @@ def loginUser(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            user_data = Customer.objects.filter(user_id=user)
+            if len(user_data)==0:
+                user_data = Staff.objects.filter(user_id=user)[0]
+                user_data = EmployeeSerializer(instance=user_data, many=False)
+            else:
+                user_data = user_data[0]
+                user_data = CustomerSerializer(instance=user_data, many=False)
             user = UserSerializer(instance=user, many=False)
-            return Response({'msg': "logged in", 'user': user.data}, status=200)
+            return Response({'msg': "logged in", 'user': user.data, 'user_data': user_data.data}, status=200)
         else:
             return Response({'msg': "password incorrect"})
 
