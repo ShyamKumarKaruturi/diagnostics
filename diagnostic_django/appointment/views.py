@@ -58,8 +58,8 @@ class AppointmentAPI(APIView):
                 appointments_tests = []
                 for appointment in appointments:
                     each_appointment_tests = list(appointment.tests.all().values(
-                        'test_id', 'test_type', 'test_name', 'test_description'
-                    ))
+                        'test_id', 'test_name', 'test_description'
+                    ))  
                     # serializer = TestSerializer(each_appointment_tests, many=True)
                     appointments_tests.append(each_appointment_tests)
                 appointments_tests_data = json.dumps(appointments_tests)
@@ -73,8 +73,8 @@ class AppointmentAPI(APIView):
                 ))
                 # serializer = AppointmentSerializer(appointments, many=True)
             else:
-                appointment = Appointment.objects.get(appointment_id=id)
-                serializer = AppointmentSerializer(appointment, many=False)
+                appointments = Appointment.objects.get(appointment_id=id)
+                serializer = AppointmentSerializer(appointments, many=False)
         except Exception as error:
             return Response(str(error), status=500)
         return Response({'appointments': json.dumps(appointments), 'related_tests': appointments_tests_data},
