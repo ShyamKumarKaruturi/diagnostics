@@ -2,11 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, retry, throwError } from 'rxjs';
 
+const baseUrl = 'http://127.0.0.1:8000/';
+
 @Injectable({
   providedIn: 'root',
 })
 export class HttpService {
   constructor(private http: HttpClient) {}
+
+  getDetailsForAppointmentBooking(): Observable<Object> {
+    return this.http.get<any>(`${baseUrl}${'appointments/get-details-for-booking-appointment/'}`);
+  }
+
   registerCustomer(data: any) {
     return this.http.post<any>(
       'http://127.0.0.1:8000/users/register-customer/',

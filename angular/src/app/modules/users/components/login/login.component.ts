@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit {
             this.http.saveData('user_type', resp.user.user_type);
             // console.log(this.http.getData('username'));
             localStorage.setItem('user', JSON.stringify(resp.user));
+            localStorage.setItem('user_data',JSON.stringify(resp.user_data))
             this.router.navigate(['']);
           }
         },

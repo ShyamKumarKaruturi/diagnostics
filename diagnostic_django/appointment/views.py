@@ -86,19 +86,18 @@ class AppointmentAPI(APIView):
         print(request.data)
         data = request.data.get('form')
         # data = request.data
-        username = request.data.get('username')
+        # username = request.data.get('username')
         # username = request.data['username']
-        user = User.objects.get(username=username)
-        customer = Customer.objects.get(user_id=user.id)
-        data['user'] = customer.customer_id
-        data['branch'] = Branch.objects.get(branch_id=data['branch'])
+        # user = User.objects.get(username=username)
+        # customer = Customer.objects.get(user_id=user.id)
         # data['user'] = customer.customer_id
-
+        # data['branch'] = Branch.objects.get(branch_id=data['branch'])
+        # data['user'] = customer.customer_id
         print(data)
-        data['doctor_id'] = None
-        data['nurse_id'] = None
-        data['lab_technician'] = None
-        data['sample_collector'] = None
+        # data['doctor_id'] = None
+        # data['nurse_id'] = None
+        # data['lab_technician'] = None
+        # data['sample_collector'] = None
         apmt = AppointmentSerializer(data=data)
         if apmt.is_valid():
             apmt.save()
