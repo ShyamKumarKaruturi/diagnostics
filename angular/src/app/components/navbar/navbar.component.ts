@@ -1,4 +1,6 @@
+import { NonNullAssert } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
+import { SubjectServiceService } from 'src/app/services/subject-service/subject-service.service';
 
 @Component({
   selector: 'app-navbar',
@@ -6,11 +8,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  loggedIn: boolean = false;
-  constructor() { }
+  loggedIn : any
+  constructor(private subjectService : SubjectServiceService) { }
 
   ngOnInit(): void {
-
+    this.subjectService.isLoggedInSubject.subscribe(data=>{
+      this.loggedIn = data
+    })
   }
-
 }

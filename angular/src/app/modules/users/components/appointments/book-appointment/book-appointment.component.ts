@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { HttpServiceService } from 'src/app/modules/users/http-service.service';
 import { AppointmentsService } from 'src/app/services/appointments-service/appointments.service';
 import { CustomerServiceService } from 'src/app/modules/customer/customer-service.service';
@@ -12,6 +12,12 @@ import { HttpService } from 'src/app/services/http-service/http.service';
   styleUrls: ['./book-appointment.component.css']
 })
 export class BookAppointmentComponent implements OnInit {
+  // update
+
+  id: any
+  appointment: any
+  relatedTests: any
+  // create
   formNotValid: boolean = false
   formError?: string = ""
   status_arr: string[] = ['booked', 'completed', 'approved', 'rejected', 'pending']
@@ -34,8 +40,35 @@ export class BookAppointmentComponent implements OnInit {
 
 
   constructor(private http: CustomerServiceService, private router: Router,
+    private actRouter: ActivatedRoute,
     private appointment_service: AppointmentsService,
-    private httpUser: HttpServiceService, private httpService: HttpService) { }
+    private httpUser: HttpServiceService, private httpService: HttpService,) {
+
+
+    this.actRouter.params.subscribe(data => {
+      this.id = parseInt(data['id'])
+    })
+
+    if (this.id) {
+      // console.log(this.id);   
+      this.appointment_service.getAppointment(this.id).subscribe({
+        next: (resp: any) => {
+          this.appointment = resp.appointment
+          this.relatedTests = resp.related_tests
+          this.bookAppointmentForm.get('user')?.setValue(this.appointment.user)
+          this.bookAppointmentForm.get('doctor_id')?.setValue(this.appointment.doctor_id)
+          this.bookAppointmentForm.get('branch')?.setValue(this.appointment.branch)
+          this.bookAppointmentForm.get('nurse_id')?.setValue(this.appointment.nurse_id)
+          this.bookAppointmentForm.get('lab_technician')?.setValue(this.appointment.lab_technician)
+          this.bookAppointmentForm.get('sample_collector')?.setValue(this.appointment.sample_collector)
+          this.bookAppointmentForm.get('slot')?.setValue(this.appointment.slot)
+          this.bookAppointmentForm.get('status')?.setValue(this.appointment.status)
+          this.bookAppointmentForm.get('tests')?.setValue(this.appointment.tests)
+
+        }
+      })
+    }
+  }
 
   bookAppointmentForm: FormGroup = new FormGroup({
     user: new FormControl("", Validators.required),
@@ -46,7 +79,7 @@ export class BookAppointmentComponent implements OnInit {
     sample_collector: new FormControl("", Validators.required),
     status: new FormControl("", Validators.required),
     slot: new FormControl("", Validators.required),
-    tests: new FormControl("",Validators.required),
+    tests: new FormControl("", Validators.required),
   })
 
   ngOnInit(): any {
@@ -56,9 +89,7 @@ export class BookAppointmentComponent implements OnInit {
         this.users = data.users;
         this.users = JSON.parse(this.users);
         this.branches = data.branches;
-        this.branches = JSON.parse(this.branches);
         this.tests = data.tests;
-        this.tests = JSON.parse(this.tests);
         this.doctors = data.doctors;
         this.doctors = JSON.parse(this.doctors);
         this.nurses = data.nurses;
@@ -67,51 +98,29 @@ export class BookAppointmentComponent implements OnInit {
         this.lab_technicians = JSON.parse(this.lab_technicians);
         this.sample_collectors = data.sample_collectors;
         this.sample_collectors = JSON.parse(this.sample_collectors);
-        console.log(this.users,this.branches,this.tests,this.doctors,this.nurses,this.lab_technicians,this.sample_collectors)
+
       },
       error: (err) => {
         console.log(err.data);
       },
     })
 
-    console.log(this.user_data['is_employee'], this.user_data, typeof (this.user_data))
-    if (this.user_data['is_employee']) {
-      this.isEmployee = true;
-    }
-    else {
-      this.isEmployee = false;
-      this.bookAppointmentForm.controls['user'].setValue(this.user_data['username']);
-    }
-    //   console.log(this.bookAppointmentForm.getRawValue(), this.isEmployee);
-    //   this.httpUser.getBranches().subscribe(data => {
-    //     this.branches = data
-    //     console.log(this.branches)})
-    //   this.http.getDoctors().subscribe(data => {
-    //     this.doctors = data
-    //     console.log(this.doctors);
-    //     })
-      // this.http.getLabTechnician().subscribe(data => {
-      //   this.labTechnicians= data
-      //   console.log(this.labTechnicians);
-      // })
-    //   this.http.getNurse().subscribe(data => {
-    //     this.nurse = data
-    //     console.log(this.nurse);
-    //   })
-    //   this.http.getSampleCollector().subscribe(data => {
-    //     this.sampleCollectors = data
-    //     console.log(this.sampleCollectors);
-    //   })
-    // }
 
-    // 'username': this.bookAppointmentForm.get('username')?.value
+
+
   }
   bookAppointment() {
-    this.bookAppointmentForm.controls['user'].setValue(this.user_info['customer_id']);
-      console.log(this.bookAppointmentForm.value);
-      this.appointment_service.setAppointment({ 'form': this.bookAppointmentForm.value, 'username': window.localStorage.getItem('username') }).subscribe(data => {
+    if (this.id) {
+      this.appointment_service.updateAppointment(this.id, this.bookAppointmentForm.value).subscribe(data => {
+        console.log(data);
+      })
+      this.router.navigate(['admin/display-appointments'])
+    }
+    else {
+      this.appointment_service.setAppointment({ 'form': this.bookAppointmentForm.value }).subscribe(data => {
         console.log(data);
 
       })
+    }
   }
 }

@@ -8,46 +8,73 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .view_manager import AppointmentManager
+# from .view_manager import AppointmentManager
 from users.models import Customer, Staff, User
 from users.serializers import EmployeeSerializer
 from .models import Branch, Appointment, Lab, Bill, Test, Review, Report
 from .serializers import *
 
+class DetailsForBooking(APIView):
+    @staticmethod
+    def get(request):
+        doctors = Staff.objects.filter(designation = 'Doctor')
+        doctors = list(doctors.values("staff_id" , "user_id__username"))
+        nurses= Staff.objects.filter(designation='Nurse')
+        nurses = list(nurses.values("staff_id", "user_id__username"))
+        lab_technicians = Staff.objects.filter(designation='Lab Technician')
+        lab_technicians = list(lab_technicians.values("staff_id", "user_id__username"))
+        sample_collectors = Staff.objects.filter(designation='Sample Collector')
+        sample_collectors = list(sample_collectors.values("staff_id", "user_id__username"))
+        tests = Test.objects.all()
+        tests = TestSerializer(tests,many=True)
+        branches = Branch.objects.all()
+        branches = BranchSerializer(branches, many=True)
+        users = Customer.objects.all()
+        users = list(users.values('customer_id','user_id__username'))
 
-# @csrf_exempt
-# class AppointmentBooking(APIView):
-#     def get(self, request, id=""):
-#         if id == "":
-#             appointments = Appointment.objects.all()
-#             serializer = AppointmentSerializer(appointments, many=True)
-#         else:
-#             appointment = Appointment.objects.get(appointment_id=id)
-#             serializer = AppointmentSerializer(appointment, many=False)
-#         return Response(json.dumps(serializer.data), status=200)
-#
-#     def post(self, request):
-#         print(request.data)
-#         data = request.data.get('form')
-#         username = request.data.get('username')
-#         print(username)
-#         user = User.objects.get(username=username)
-#         print(user)
-#         customer = Customer.objects.get(user_id=user.id)
-#         print(customer)
-#         data['user'] = customer.customer_id
-#         print(data)
-#         apmt = AppointmentSerializer(data=data)
-#         print(apmt)
-#         if apmt.is_valid():
-#             apmt.save()
-#             return Response({"message": "appointment_booked"}, status=200)
-#         else:
-#             return Response({"message": "appointment not booked"}, status=200)
-#         # return Response({"message":"appointment not booked"} , status = 200 )
-#
-#     def delete(self,request):
-#         pass
+        return Response({'doctors':json.dumps(doctors) , 'nurses':json.dumps(nurses),'lab_technicians':json.dumps(lab_technicians),
+                       'sample_collectors':json.dumps(sample_collectors) , 'tests':tests.data , 'branches':branches.data,
+                         'users':json.dumps(users)} ,status=200)
+
+class DetailAppointment(APIView):
+    @staticmethod
+    def get(request,id):
+        appointment = Appointment.objects.get(appointment_id=id)
+        appointments_tests = list(appointment.tests.all().values(
+                        'test_id', 'test_name', 'test_description'
+                    ))
+        serializer = AppointmentSerializer(appointment, many=False)
+        # appointment = appointment.values(
+        #     'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot',
+        #     'doctor_id__staff_id', 'doctor_id__user_id__username',
+        #     'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
+        #     'lab_technician__user_id__username',
+        #     'sample_collector__staff_id', 'sample_collector__user_id__username', 'status',
+        # )
+        return Response({'appointment': serializer.data, 'related_tests': appointments_tests},
+                        status=200)
+
+    @staticmethod
+    def delete(request, id):
+        appointment = Appointment.objects.get(appointment_id=id)
+        if appointment:
+            appointment.delete()
+            return JsonResponse(data={'success': 'Appointment Data deleted successfully.'}, safe=False)
+        return JsonResponse(
+            data={'Failure': 'Appointment Doesn\'t exists . So, Appointment Data cound not be deleted successfully.'},
+            safe=False)
+
+    @staticmethod
+    def put(request,id):
+        appointment_data = JSONParser().parse(request)
+        appointment = Appointment.objects.get(appointment_id=id)
+        serializer = AppointmentSerializer(appointment, data=appointment_data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED, safe=False)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
+
+
 
 class AppointmentAPI(APIView):
     @staticmethod
@@ -63,7 +90,6 @@ class AppointmentAPI(APIView):
                     # serializer = TestSerializer(each_appointment_tests, many=True)
                     appointments_tests.append(each_appointment_tests)
                 appointments_tests_data = json.dumps(appointments_tests)
-                # appointments_tests = AppointmentManager.get_appointments_related_all_tests(list(appointments))
                 appointments = list(appointments.values(
                     'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot',
                     'doctor_id__staff_id', 'doctor_id__user_id__username',
@@ -85,25 +111,7 @@ class AppointmentAPI(APIView):
     def post(request):
         print(request.data)
         data = request.data.get('form')
-        # data = request.data
-        # username = request.data.get('username')
-        # username = request.data['username']
-<<<<<<< HEAD
-        user = User.objects.get(username=username)
-        customer = Customer.objects.get(user_id=user.id)
-        data['user'] = customer.customer_id
-=======
-        # user = User.objects.get(username=username)
-        # customer = Customer.objects.get(user_id=user.id)
-        # data['user'] = customer.customer_id
->>>>>>> 076fb2aefab3de5e387c8ef54886138b27f79e07
-        # data['branch'] = Branch.objects.get(branch_id=data['branch'])
-        # data['user'] = customer.customer_id
         print(data)
-        # data['doctor_id'] = None
-        # data['nurse_id'] = None
-        # data['lab_technician'] = None
-        # data['sample_collector'] = None
         apmt = AppointmentSerializer(data=data)
         if apmt.is_valid():
             apmt.save()
@@ -112,26 +120,9 @@ class AppointmentAPI(APIView):
             return Response({"message": "appointment not booked"}, status=500)
         # return Response({"message":"appointment not booked"} , status = 200 )
 
-    @staticmethod
-    def put(request):
-        appointment_data = JSONParser().parse(request)
-        appointment = Appointment.objects.get(appointment_id=appointment_data['id'])
-        serializer = AppointmentSerializer(appointment, data=appointment_data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED, safe=False)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
 
-    @staticmethod
-    def delete(request, id=""):
-        appointment = Appointment.objects.get(appointment_id=id)
-        if appointment:
-            appointment.delete()
-            return JsonResponse(data={'success': 'Appointment Data deleted successfully.'}, safe=False)
-        return JsonResponse(
-            data={'Failure': 'Appointment Doesn\'t exists . So, Appointment Data cound not be deleted successfully.'},
-            safe=False)
-
+class DetailBranch(APIView):
+    pass
 
 class BranchAPI(APIView):
     @staticmethod
@@ -152,6 +143,7 @@ class BranchAPI(APIView):
     def post(request):
         print(request.data)
         data = request.data.get('form')
+        branch_id = data['branch_id']
         try:
             branch = Branch.objects.get(branch_id= branch_id)
             return Response({"message": "Branch Already exist" , "action_status": "failure"}, status=200)
@@ -185,6 +177,10 @@ class BranchAPI(APIView):
         return JsonResponse(
             data={'Failure': 'Branch doesn\'t exists . So, Branch could not be deleted successfully.'},
             safe=False)
+
+
+class DetailLab(APIView):
+    pass
 
 
 class LabAPI(APIView):
@@ -358,23 +354,56 @@ class ReviewAPI(APIView):
             safe=False)
 
 
+class DetailBill(APIView):
+    @staticmethod
+    def delete(request,id):
+        bill = Bill.objects.get(id=id)
+        if bill:
+            bill.delete()
+            return JsonResponse(data={'success': 'Bill Details deleted successfully.'}, safe=False)
+        return JsonResponse(
+            data={'Failure': 'Bill Doesn\'t exists . So, Bill Data cound not be deleted successfully.'},
+            safe=False)
+
+    @staticmethod
+    def put(request):
+        # branch_data = JSONParser().parse(request)
+        data = request.data.get('form')
+        bill = Bill.objects.get(id=data['id'])
+        serializer = BillSerializer(bill, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED, safe=False)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
+
+    @staticmethod
+    def get(request,id):
+        try:
+            bill = list(Bill.objects.get(id = id).values(
+                'id', 'appointment__appointment_id', 'appointment__user__user_id__username',
+                'consultation_fee', 'test_fee', 'tax', 'total'
+            ))
+            # serializer = BillSerializer(bills, many=True)
+        except Exception as error:
+            return Response(str(error), status=500)
+        return Response(json.dumps(bill), status=200)
+        # return Response(json.dumps(serializer.data), status=200)
+
+
 class BillAPI(APIView):
     @staticmethod
-    def get(request, id=""):
+    def get(request):
         try:
-            if id == "":
-                bills = list(Bill.objects.all().values(
-                    'id', 'appointment__appointment_id', 'appointment__user__username',
-                    'consultation_fee', 'test_fee', 'tax', 'total'
-                ))
-                # serializer = BillSerializer(bills, many=True)
-            else:
-                bill = Bill.objects.get(id=id)
-                serializer = BillSerializer(bill, many=False)
+            bills = list(Bill.objects.all().values(
+                'id', 'appointment__appointment_id', 'appointment__user__user_id__username',
+                'consultation_fee', 'test_fee', 'tax', 'total'
+            ))
+            # serializer = BillSerializer(bills, many=True)
         except Exception as error:
             return Response(str(error), status=500)
         return Response(json.dumps(bills), status=200)
         # return Response(json.dumps(serializer.data), status=200)
+
 
     @staticmethod
     def post(request):
@@ -392,26 +421,7 @@ class BillAPI(APIView):
             return Response({"message": "appointment not booked"}, status=500)
         # return Response({"message":"appointment not booked"} , status = 200 )
 
-    @staticmethod
-    def put(request):
-        # branch_data = JSONParser().parse(request)
-        data = request.data.get('form')
-        bill = Bill.objects.get(id=data['id'])
-        serializer = BillSerializer(bill, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED, safe=False)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
 
-    @staticmethod
-    def delete(request, id=""):
-        bill = Bill.objects.get(lab_id=id)
-        if bill:
-            bill.delete()
-            return JsonResponse(data={'success': 'Test deleted successfully.'}, safe=False)
-        return JsonResponse(
-            data={'Failure': 'Test doesn\'t exists . So, Branch could not be deleted successfully.'},
-            safe=False)
 
 
 class ReportAPI(APIView):
@@ -471,7 +481,7 @@ class ReportAPI(APIView):
 
 
 @api_view(['GET'])
-def getEmployees(request):
+def get_employees(request):
     if request.GET['role'] == 'doctor':
         doctors = Staff.objects.filter(designation="Doctor")
         serializer = EmployeeSerializer(doctors, many=True)

@@ -1,0 +1,75 @@
+<form style="margin-top: 5%" [formGroup]="loginForm" class="form-container">
+  <mat-card style="background-color: #eee5f390">
+    <mat-card-header>
+      <mat-card-title style="color: #7710ab">Login</mat-card-title>
+      {{ responseMessage }}
+      <mat-card-title *ngIf="formNotValid"
+        >please Fill All required details</mat-card-title
+      >
+    </mat-card-header>
+    <br />
+    <mat-card-content>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="full-width">
+            <input formControlName="username" matInput placeholder="username" />
+          </mat-form-field>
+          <small
+            class="text-danger"
+            *ngIf="
+              loginForm.get('username')?.invalid &&
+              loginForm.get('username')?.touched
+            "
+            >Please enter password</small
+          >
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field class="full-width">
+          <input
+            formControlName="password"
+            matInput
+            placeholder="password"
+            [type]="hide ? 'password' : 'text'"
+            placeholder="password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="hide = !hide"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide"
+          >
+            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <small
+          class="text-danger"
+          *ngIf="
+            loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched
+          "
+          >Please enter password</small
+        >
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        (click)="submitLogin()"
+        mat-raised-button=""
+        style="color: #3f1651; background-color: #c3a1d5; margin-left: 3%"
+      >
+        login
+      </button>
+      <button
+        style="color: #3f1651; background-color: #c3a1d5"
+        routerLink="../register"
+        mat-raised-button=""
+      >
+        New User? create new account
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>

@@ -83,7 +83,7 @@ class Bill(models.Model):
     total = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class Report(models.Model):

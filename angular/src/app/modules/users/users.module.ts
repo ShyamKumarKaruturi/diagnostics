@@ -6,9 +6,6 @@ import { RegisterCustomerComponent } from './components/register-customer/regist
 import { RegisterEmployeeComponent } from './components/register-employee/register-employee.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LoginComponent } from './components/login/login.component';
-import { LogoutComponent } from './components/logout/logout.component';
-
 // material
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
@@ -39,14 +36,12 @@ import { NewLabComponent } from './components/labs/new-lab/new-lab.component';
 import { NewReportComponent } from './components/reports/new-report/new-report.component';
 import { DisplayReportComponent } from './components/reports/display-report/display-report.component';
 import { DisplayReportsComponent } from './components/reports/display-reports/display-reports.component';
-import { DisplayReviewComponent } from './components/reviews/display-review/display-review.component';
-import { DisplayReviewsComponent } from './components/reviews/display-reviews/display-reviews.component';
-import { NewReviewComponent } from './components/reviews/new-review/new-review.component';
 import { NewTestComponent } from './components/tests/new-test/new-test.component';
 import { DisplayTestsComponent } from './components/tests/display-tests/display-tests.component';
-import { AdminNavigationComponent } from './components/admin-navigation/admin-navigation.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
-
+import { MatDialogModule } from '@angular/material/dialog';
+import { CloseDialogComponent } from './components/close-dialog/close-dialog.component';
+import { DisplayComponent } from './components/display/display.component';
 
 
 @NgModule({
@@ -54,8 +49,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     RegisterCustomerComponent,
     RegisterEmployeeComponent,
     DashboardComponent,
-    LoginComponent,
-    LogoutComponent,
     BookAppointmentComponent,
     DisplayAppointmentComponent,
     DisplayAppointmentsComponent,
@@ -70,13 +63,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     NewReportComponent,
     DisplayReportComponent,
     DisplayReportsComponent,
-    DisplayReviewComponent,
-    DisplayReviewsComponent,
-    NewReviewComponent,
+   
     NewTestComponent,
     DisplayTestsComponent,
-    AdminNavigationComponent,
+    CloseDialogComponent,
+    DisplayComponent,
   ],
+  entryComponents:[CloseDialogComponent],
   imports: [
     CommonModule,
     UsersRoutingModule,
@@ -96,7 +89,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatSortModule,
     MatTableModule,
     MatExpansionModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatDialogModule
   ],
   bootstrap: [
   ]

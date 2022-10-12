@@ -1,11 +1,12 @@
 import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
-
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatAccordion } from '@angular/material/expansion';
 
 import { BillsService } from 'src/app/services/bills-service/bills.service';
+import { CloseDialogComponent } from '../../close-dialog/close-dialog.component';
 
 export interface BillData{
   bill_id: string;
@@ -31,8 +32,24 @@ export class DisplayBillsComponent implements AfterViewInit,OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatAccordion) accordion!: MatAccordion;
 
-  constructor(private bills_service: BillsService) {
+  constructor(private bills_service: BillsService, public dialog: MatDialog) {
     this.dataSource = new MatTableDataSource(this.bills);
+    
+  }
+  getAllBills(){
+    this.bills_service.getBills().subscribe({
+      next: (data: any) => {
+        this.bills = data;
+        this.bills = JSON.parse(this.bills);
+        this.dataSource.data = this.bills;
+        console.log(this.bills[0]);
+
+        console.log(this.dataSource);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 
   displayedColumns: string[] = [
@@ -47,18 +64,7 @@ export class DisplayBillsComponent implements AfterViewInit,OnInit {
     'delete',
   ];
   ngOnInit(): void {
-    this.bills_service.getBills().subscribe({
-      next: (data: any) => {
-        console.log(data);
-        this.bills = data.bills;
-        this.bills = JSON.parse(this.bills);
-        this.dataSource.data = this.bills;
-        console.log(this.dataSource);
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
+    this.getAllBills()
   }
 
   ngAfterViewInit() {
@@ -72,5 +78,20 @@ export class DisplayBillsComponent implements AfterViewInit,OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+  openDialog(id:any){
+    let dialogRef = this.dialog.open(CloseDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result=>{
+      console.log(result);
+      if(result == 'true'){
+        this.bills_service.deleteBill(parseInt(id)).subscribe({
+          next : (res)=>{
+            console.log(res);
+            this.getAllBills()
+          }
+        })
+      }
+    })
   }
 }

@@ -9,7 +9,7 @@ import { AboutComponent } from './components/about/about.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpServiceService } from './modules/users/http-service.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
 // material
@@ -28,6 +28,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UsersModule } from './modules/users/users.module';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { LoginComponent } from './components/login/login.component';
+import { LogoutComponent } from './components/logout/logout.component';
+import { RegisterCustomerComponent } from './components/register-customer/register-customer.component';
 
 
 @NgModule({
@@ -37,6 +41,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     AboutComponent,
     NotFoundComponent,
     NavbarComponent,
+    LoginComponent,
+    LogoutComponent,
+    RegisterCustomerComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,9 +64,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
-    MatToolbarModule
+    MatToolbarModule,
+    
   ],
-  providers: [HttpServiceService],
+  providers: [HttpServiceService,{
+    provide : HTTP_INTERCEPTORS,
+    useClass : AuthInterceptor,
+    multi:true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

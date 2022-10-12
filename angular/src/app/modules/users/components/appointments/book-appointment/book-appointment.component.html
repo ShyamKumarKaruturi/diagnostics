@@ -10,7 +10,30 @@
       >
     </mat-card-header>
     <mat-card-content >
-      <div class="col-md-6 " *ngIf="isEmployee">
+      <!-- User Selection -->
+      <div class="col-md-6">
+        <mat-form-field class="full-width" appearance="fill">
+          <mat-label>Customer</mat-label>
+          <mat-select formControlName="user" required>
+            <mat-option> --- </mat-option>
+            <mat-option
+              *ngFor="let user of users"
+              [value]="user.customer_id"
+            >
+              {{ user.user_id__username }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!-- user error message -->
+      <small
+        *ngIf="
+          bookAppointmentForm.get('user')?.touched ||
+          bookAppointmentForm.get('user')?.invalid
+        "
+        >please select branch</small
+      >
+      <!-- <div class="col-md-6 " *ngIf="isEmployee">
         <mat-form-field class="full-width">
           <input formControlName="user" matInput placeholder="Customer" />
         </mat-form-field>
@@ -22,7 +45,7 @@
           "
           >enter valid mail address</small
         >
-      </div>
+      </div> -->
 
       <div class="col-md-6" *ngIf="!isEmployee">
         <mat-card>
@@ -42,13 +65,13 @@
         </mat-form-field>
       </div>
       <!-- Status error message -->
-      <!-- <small
+      <small
         *ngIf="
           bookAppointmentForm.get('status')?.touched ||
           bookAppointmentForm.get('status')?.invalid
         "
         >please select status</small
-      > -->
+      >
 
       <!-- Sample Collector Selection -->
       <div class="col-md-6">
@@ -75,16 +98,16 @@
               {{ sc["staff_id"] }}
             </mat-option>
           </mat-select>
-        </mat-form-field> -->
+        </mat-form-field> --> 
       </div>
       <!-- Sample Collector error message -->
-      <!-- <small
+      <small
         *ngIf="
           bookAppointmentForm.get('sample_collector')?.touched ||
           bookAppointmentForm.get('sample_collector')?.invalid
         "
         >please select sample collecor</small
-      > -->
+      >
 
       <!-- Lab Technician Selection -->
       <div class="col-md-6">
@@ -100,13 +123,13 @@
         <mat-hint>{{bookAppointmentForm.value?.sound}}</mat-hint></mat-form-field>
       </div>
       <!-- Lab Technician error message -->
-      <!-- <small
+      <small
         *ngIf="
           bookAppointmentForm.get('lab_technician')?.touched ||
           bookAppointmentForm.get('lab_technician')?.invalid
         "
         >please select lab technician</small
-      > -->
+      >
 
       <!-- Nurse Selection -->
       <div class="col-md-6">
@@ -121,13 +144,13 @@
         </mat-form-field>
       </div>
       <!-- Nurse error message -->
-      <!-- <small
+      <small
         *ngIf="
           bookAppointmentForm.get('nurse_id')?.touched ||
           bookAppointmentForm.get('nurse_id')?.invalid
         "
         >please select Nurse</small
-      > -->
+      >
 
       <!-- Slot Selection -->
       <div class="col-md-6">
@@ -142,13 +165,13 @@
         </mat-form-field>
       </div>
       <!-- Slot error message -->
-      <!-- <small
+      <small
         *ngIf="
           bookAppointmentForm.get('slot')?.touched ||
           bookAppointmentForm.get('slot')?.invalid
         "
         >please select slot</small
-      > -->
+      >
 
       <!-- Doctor Selection -->
       <div class="col-md-6">
@@ -160,19 +183,19 @@
               *ngFor="let doctor of doctors"
               [value]="doctor.staff_id"
             >
-              {{ doctor.user_id__username }}
+              {{ doctor.user_id__username}}
             </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <!-- Doctor error message -->
-      <!-- <small
+      <small
         *ngIf="
           bookAppointmentForm.get('doctor_id')?.touched ||
           bookAppointmentForm.get('doctor_id')?.invalid
         "
         >please select Doctor</small
-      > -->
+      >
 
       <!-- Branch Selection -->
       <div class="col-md-6">
@@ -190,13 +213,13 @@
         </mat-form-field>
       </div>
       <!-- Branch error message -->
-      <!-- <small
+      <small
         *ngIf="
           bookAppointmentForm.get('branch')?.touched ||
           bookAppointmentForm.get('branch')?.invalid
         "
         >please select branch</small
-      > -->
+      >
 
 
       <!-- Test Selection -->
@@ -205,29 +228,23 @@
         <mat-label>Tests</mat-label>
         <!-- <mat-option disabled > --- </mat-option> -->
         <mat-select formControlName="tests" multiple>
-
           <mat-option *ngFor="let test of tests" [value]="test.test_id">{{test.test_name}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <!-- Branch error message -->
-    <!-- <small
+    <small
     *ngIf="
       bookAppointmentForm.get('tests')?.touched ||
       bookAppointmentForm.get('tests')?.invalid
     "
     >Please select atleast one Test</small
-  > -->
+  >
 
     </mat-card-content>
     <mat-card-actions>
-<<<<<<< HEAD
-      <button style="color:#3F1651;background-color: #c3a1d5;margin-left: 3%; "  (click)="bookAppointment()" mat-raised-button="" color="primary">
-        Register
-=======
       <button (click)="bookAppointment()" mat-raised-button="" color="primary">
         Book Appointment
->>>>>>> 076fb2aefab3de5e387c8ef54886138b27f79e07
       </button>
     </mat-card-actions>
   </mat-card>

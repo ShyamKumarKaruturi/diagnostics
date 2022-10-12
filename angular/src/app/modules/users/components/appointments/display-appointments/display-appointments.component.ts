@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -6,6 +7,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatAccordion } from '@angular/material/expansion';
 
 import { AppointmentsService } from 'src/app/services/appointments-service/appointments.service';
+import { CloseDialogComponent } from '../../close-dialog/close-dialog.component';
+import { Router } from '@angular/router';
 
 export interface AppointmentData {
   appointment_id: string;
@@ -39,7 +42,7 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatAccordion) accordion!: MatAccordion;
 
-  constructor(private appointments_service: AppointmentsService) {
+  constructor(private appointments_service: AppointmentsService , public dialog: MatDialog , private router :Router) {
     this.dataSource = new MatTableDataSource(this.appointments);
   }
 
@@ -63,7 +66,7 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
     'update',
   ];
 
-  ngOnInit(): void {
+  getAppointments(){
     this.appointments_service.getAppointments().subscribe({
       next: (data: any) => {
         console.log(data);
@@ -81,6 +84,9 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
       },
     });
   }
+  ngOnInit(): void {
+    this.getAppointments()
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -94,5 +100,33 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+  openDialog(id: any) {
+    let dialogRef = this.dialog.open(CloseDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+      if (result == 'true') {
+        this.appointments_service.deleteAppointment(id).subscribe({
+          next: (res) => {
+            console.log(res);
+            this.getAppointments()
+          }
+        })
+      }
+    })
+  }
+  submitDelete(appId: any) {
+    console.log("delete");
+    this.appointments_service.deleteAppointment(appId).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.getAppointments()
+      }
+    })
+  }
+
+  updateAppointment(id : any){
+    this.router.navigate(['admin/edit-appointment' , id])
   }
 }
