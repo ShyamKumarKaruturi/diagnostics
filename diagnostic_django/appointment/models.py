@@ -51,7 +51,7 @@ class Appointment(models.Model):
         ('4 PM', '4 PM')
     )
     STATUS = (
-        ('booked', 'booked'),
+        # ('booked', 'booked'),
         ('completed', 'completed'),
         ('approved', 'approved'),
         ('rejected', 'rejected'),

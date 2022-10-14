@@ -1,5 +1,7 @@
 import json
 
+from django.db.models import Q
+
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
@@ -52,3 +54,42 @@ class AppointmentManager(APIView):
             }, status=200)
         except Exception as error:
             return Response(str(error), status=500)
+
+
+class AppointmentsDetails:
+
+    def get_complete_appointments_data():
+        appointments = Appointment.objects.all()
+        appointments_tests = []
+        for appointment in appointments:
+            each_appointment_tests = list(appointment.tests.all().values(
+                'test_id', 'test_name', 'test_description'
+            ))
+            appointments_tests.append(each_appointment_tests)
+        appointments_tests_data = json.dumps(appointments_tests)
+        appointments = list(appointments.values(
+            'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot',
+            'doctor_id__staff_id', 'doctor_id__user_id__username',
+            'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
+            'lab_technician__user_id__username',
+            'sample_collector__staff_id', 'sample_collector__user_id__username', 'status',
+        ))
+        appointments = json.dumps(appointments)
+        return (appointments, appointments_tests_data)
+    
+    def get_staff_related_appointments_data(id:str, designation: str):
+        query = Q()
+        if designation == "Doctor":
+            query &= Q(doctor_id__user_id=id)
+        elif designation == "Nurse":
+            query &= Q(nurse_id__user_id=id)
+        elif designation == "Lab Technician":
+            query &= Q(lab_technician__user_id=id)
+        elif designation == "Sample Collector":
+            query &= Q(sample_collector__user_id=id)
+        appointments = Appointment.objects.filter(query)
+        appointments = list(appointments.values(
+            'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot', 'status',
+        ))
+        appointments = json.dumps(appointments)
+        return appointments

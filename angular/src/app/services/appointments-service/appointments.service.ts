@@ -12,8 +12,8 @@ export class AppointmentsService {
 
   // Appointments Services.
 
-  getAppointments(): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`);
+  getAppointments(id : any): Observable<Object> {
+    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`, id);
   }
   setAppointment(data: any) {
     return this.http.post<any>(`${baseUrl}${'appointments/book-appointment/'}`, data);

@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-# from .view_manager import AppointmentManager
+from .view_manager import *
 from users.models import Customer, Staff, User
 from users.serializers import EmployeeSerializer
 from .models import Branch, Appointment, Lab, Bill, Test, Review, Report
@@ -81,31 +81,21 @@ class AppointmentAPI(APIView):
     def get(request, id=""):
         try:
             if id == "":
-                appointments = Appointment.objects.all()
-                appointments_tests = []
-                for appointment in appointments:
-                    each_appointment_tests = list(appointment.tests.all().values(
-                        'test_id', 'test_name', 'test_description'
-                    ))  
-                    # serializer = TestSerializer(each_appointment_tests, many=True)
-                    appointments_tests.append(each_appointment_tests)
-                appointments_tests_data = json.dumps(appointments_tests)
-                appointments = list(appointments.values(
-                    'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot',
-                    'doctor_id__staff_id', 'doctor_id__user_id__username',
-                    'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
-                    'lab_technician__user_id__username',
-                    'sample_collector__staff_id', 'sample_collector__user_id__username', 'status',
-                ))
-                # serializer = AppointmentSerializer(appointments, many=True)
+                loggedin_user_id = request.data.get('id')
+                loggedin_user = User.objects.get(id = loggedin_user_id)
+                if loggedin_user.user_type == "admin":
+                    appointments, appointments_tests_data = AppointmentsDetails.get_complete_appointments_data()
+                if loggedin_user.user_type == "staff":
+                    staff = Staff.objects.get(user_id=request.user.id)
+                    appointments = AppointmentsDetails.get_staff_related_appointments_data(loggedin_user.id, staff.designation)
+                    appointments_tests_data = ""
             else:
                 appointments = Appointment.objects.get(appointment_id=id)
                 serializer = AppointmentSerializer(appointments, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response({'appointments': json.dumps(appointments), 'related_tests': appointments_tests_data},
+        return Response({'appointments': appointments, 'related_tests': appointments_tests_data},
                         status=200)
-        # return Response(json.dumps(serializer.data), status=200)
 
     @staticmethod
     def post(request):

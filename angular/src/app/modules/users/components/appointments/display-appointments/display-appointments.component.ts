@@ -9,6 +9,7 @@ import { MatAccordion } from '@angular/material/expansion';
 import { AppointmentsService } from 'src/app/services/appointments-service/appointments.service';
 import { CloseDialogComponent } from '../../close-dialog/close-dialog.component';
 import { Router } from '@angular/router';
+import { SubjectServiceService } from 'src/app/services/subject-service/subject-service.service';
 
 export interface AppointmentData {
   appointment_id: string;
@@ -37,45 +38,35 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   appointments: any;
   tests: any;
   dataSource: MatTableDataSource<AppointmentData>;
+  user_id: any;
+  user_type!: string;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatAccordion) accordion!: MatAccordion;
 
-  constructor(private appointments_service: AppointmentsService , public dialog: MatDialog , private router :Router) {
+  constructor(private appointments_service: AppointmentsService , public dialog: MatDialog , private router :Router, private subjectService : SubjectServiceService) {
     this.dataSource = new MatTableDataSource(this.appointments);
   }
 
-  displayedColumns: string[] = [
-    'appointment id',
-    'customer id',
-    'customer name',
-    // 'date',
-    'slot',
-    'doctor id',
-    'doctor',
-    'nurse id',
-    'nurse',
-    'lab technician id',
-    'lab technician',
-    'sample collector id',
-    'sample collector',
-    'status',
-    'tests',
-    'delete',
-    'update',
-  ];
+  displayedColumns!: string[];
 
-  getAppointments(){
-    this.appointments_service.getAppointments().subscribe({
+  getAppointments() {
+    // this.subjectService.userTypeIdSubject.subscribe(id =>{
+    //     this.user_id= id
+    // })
+    // this.subjectService.userTypeSubject.subscribe(user_type =>{
+    //   this.user_type= user_type
+    // })
+    this.appointments_service.getAppointments(this.user_id).subscribe({
       next: (data: any) => {
-        // console.log(data);
+        console.log(this.user_id)
         this.appointments = data.appointments;
         this.tests = data.related_tests;
-        this.tests = JSON.parse(this.tests);
-        console.log('Before', this.appointments);
+        if (this.tests != "") {
+          this.tests = JSON.parse(this.tests);
+        }
         this.appointments = JSON.parse(this.appointments);
-        console.log('After', this.appointments, this.tests);
         this.dataSource.data = this.appointments;
       },
       error: (err) => {
@@ -83,6 +74,41 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
       },
     });
   }
+
+  setAppointmentsAccordingToUser() {
+    if (this.user_type === "admin") {
+      displayedColumnsForAdmin = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'doctor id',
+        'doctor',
+        'nurse id',
+        'nurse',
+        'lab technician id',
+        'lab technician',
+        'sample collector id',
+        'sample collector',
+        'status',
+        'tests',
+        'delete',
+        'update',
+      ];
+    }
+    else if (this.user_type === "doctor"){
+      this.statusCompletedDisplayedColumnsForDoctor = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'status',
+      ];
+    }
+  }
+
   ngOnInit(): void {
     this.getAppointments()
   }
