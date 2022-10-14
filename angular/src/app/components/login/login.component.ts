@@ -23,23 +23,33 @@ export class LoginComponent implements OnInit {
     // alert(err)
   }
   submitLogin() {
-    this.http.loginUser(this.loginForm.value).subscribe({
-      next: (resp: any) => {
-        this.responseMessage = resp.message
-        if (resp.message == "success") {
-          AuthInterceptor.accessToken = resp.token;
-          this.subjectService.sendLoginDetails({
-            'user_type': resp.user_type,
-            'username': resp.username,
-            'user_type_id': resp.user_type_id
-          })
-          this.router.navigate([""])
+    this.loginForm.get('username')?.setValue(this.loginForm.get('username')?.value.trim())
+    this.loginForm.get('password')?.setValue(this.loginForm.get('password')?.value.trim())
+
+
+    if(this.loginForm.valid){
+      this.http.loginUser(this.loginForm.value).subscribe({
+        next: (resp: any) => {
+          this.responseMessage = resp.message
+          if (resp.message == "success") {
+            AuthInterceptor.accessToken = resp.token;
+            this.subjectService.sendLoginDetails({
+              'user_type': resp.user_type,
+              'username': resp.username,
+              'user_type_id': resp.user_type_id
+            })
+            this.router.navigate([""])
+          }
+        },
+        error: (err: any) => {
+          console.log(err);
         }
-      },
-      error: (err: any) => {
-        console.log(err);
-      }
-    })
+      })
+    }
+    else{
+      this.formNotValid = true
+    }
+
   }
 
   ngOnInit(): void { }

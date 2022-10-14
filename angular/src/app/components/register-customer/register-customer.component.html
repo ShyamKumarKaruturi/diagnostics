@@ -13,10 +13,10 @@
     <mat-card-content>
       <div class="row">
         <div class="col-md-6">
-          <mat-form-field class="full-width">
+          <mat-form-field appearance="outline" appearance="outline" class="full-width">
             <input formControlName="username" matInput placeholder="username" />
           </mat-form-field>
-          <small
+          <small style="margin-left: 5px; font-size: 15px; "
             class="text-danger"
             *ngIf="
               customerRegisterForm.get('username')?.invalid &&
@@ -27,40 +27,40 @@
         </div>
       </div>
       <div class="col-md-6">
-        <mat-form-field class="full-width">
+        <mat-form-field appearance="outline" appearance="outline" class="full-width">
           <input
             formControlName="first_name"
             matInput
             placeholder="first_name"
           />
         </mat-form-field>
-        <small
+        <small style="margin-left: 5px; font-size: 15px; "
           *ngIf="
             customerRegisterForm.get('first_name')?.invalid &&
             customerRegisterForm.get('first_name')?.touched
           "
-          >field is required</small
+          >please enter first name</small
         >
       </div>
       <div class="col-md-6">
-        <mat-form-field class="full-width">
+        <mat-form-field appearance="outline" appearance="outline" class="full-width">
           <input formControlName="last_name" matInput placeholder="last_name" />
         </mat-form-field>
 
-        <small
+        <small style="margin-left: 5px; font-size: 15px; "
           class="text-danger"
           *ngIf="
             customerRegisterForm.get('last_name')?.invalid &&
             customerRegisterForm.get('last_name')?.touched
           "
-          >field is required</small
-        >
+          >please enter last name
+        </small>
       </div>
       <div class="col-md-6">
-        <mat-form-field class="full-width">
+        <mat-form-field appearance="outline" class="full-width">
           <input formControlName="email" matInput placeholder="email" />
         </mat-form-field>
-        <small
+        <small style="margin-left: 5px; font-size: 15px; "
           class="text-danger"
           *ngIf="
             customerRegisterForm.get('email')?.invalid &&
@@ -69,26 +69,36 @@
           >enter valid mail address</small
         >
       </div>
-      <div class="col-md-6">
-        <mat-form-field class="full-width">
+      <div class="col-md-6" style="display: flex;">
+        <mat-form-field appearance="outline" class="full-width">
           <input
-            type="number"
+            type="text"
             formControlName="mobile_number"
             matInput
             placeholder="mobile_number"
           />
         </mat-form-field>
-        <small
-          class="text-danger"
-          *ngIf="
-            customerRegisterForm.get('mobile_number')?.invalid &&
-            customerRegisterForm.get('mobile_number')?.touched
-          "
-          >enter valid mobile number</small
-        >
+        <div>
+          <small style="margin-left: 5px; font-size: 15px; "
+            class="text-danger"
+            *ngIf="
+              customerRegisterForm.get('mobile_number')?.invalid &&
+              customerRegisterForm.get('mobile_number')?.touched
+            "
+            >please enter mobile number</small
+          >
+          <br />
+          <small style="margin-left: 5px; font-size: 15px; "
+            class="text-danger"
+            *ngIf="
+              customerRegisterForm.get('mobile_number')?.hasError('pattern')
+            "
+            >please enter valid mobile_number</small
+          >
+        </div>
       </div>
       <div class="col-md-6">
-        <mat-form-field class="full-width">
+        <mat-form-field appearance="outline" class="full-width">
           <input
             type="number"
             formControlName="age"
@@ -96,7 +106,7 @@
             placeholder="age in number"
           />
         </mat-form-field>
-        <small
+        <small style="margin-left: 5px; font-size: 15px; "
           class="text-danger"
           *ngIf="
             customerRegisterForm.get('age')?.invalid &&
@@ -106,11 +116,11 @@
         >
       </div>
       <div class="col-md-6">
-        <mat-form-field class="full-width">
+        <mat-form-field appearance="outline" class="full-width">
           <input formControlName="address" matInput placeholder="address" />
         </mat-form-field>
 
-        <small
+        <small style="margin-left: 5px; font-size: 15px; "
           class="text-danger"
           *ngIf="
             customerRegisterForm.get('address')?.invalid &&
@@ -119,26 +129,34 @@
           >please enter address</small
         >
       </div>
-      <div class="col-md-6">
-        <mat-form-field class="full-width">
+      <div   class="col-md-6" style="display: flex;">
+        <mat-form-field appearance="outline" class="full-width">
           <input
-            type="number"
+            type="text"
             formControlName="pincode"
             matInput
             placeholder="pincode"
-          />
-          <small
-            class="text-danger"
-            *ngIf="
-              customerRegisterForm.get('pincode')?.invalid &&
-              customerRegisterForm.get('pincode')?.touched
-            "
-            >please enter pincode</small
-          >
-        </mat-form-field>
+            />
+          </mat-form-field>
+          <div>
+            <small style="margin-left: 5px; font-size: 15px; "
+              class="text-danger"
+              *ngIf="
+                customerRegisterForm.get('pincode')?.invalid &&
+                customerRegisterForm.get('pincode')?.touched
+              "
+              >please enter pincode</small
+            >
+            <br />
+            <small style="margin-left: 5px; font-size: 15px; "
+              class="text-danger"
+              *ngIf="customerRegisterForm.get('pincode')?.hasError('pattern')"
+              >please enter valid pincode</small
+            >
+          </div>
       </div>
-      <div class="col-md-6">
-        <mat-form-field class="full-width">
+      <div style="display: flex;" class="col-md-6">
+        <mat-form-field appearance="outline" class="full-width">
           <input
             formControlName="password"
             matInput
@@ -155,22 +173,57 @@
             <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
           </button>
         </mat-form-field>
-        <small
-          class="text-danger"
-          *ngIf="
-            customerRegisterForm.get('password')?.invalid &&
-            customerRegisterForm.get('password')?.touched
-          "
-        >
-          password should contain atleast 8 characters
-        </small>
+        <div>
+          <small style="margin-left: 5px; font-size: 15px; "
+            class="text-danger"
+            *ngIf="
+              customerRegisterForm.get('password')?.invalid &&
+              customerRegisterForm.get('password')?.touched
+            "
+            >please enter password</small
+          >
+          <small style="margin-left: 5px; font-size: 15px; "
+            class="text-danger"
+            *ngIf="
+              customerRegisterForm.get('password')?.hasError('minlength')
+            "
+            >password should contain minimum 8 characters</small
+          >
+        </div>
       </div>
-      <!-- <div class="col-md-6">
-        <mat-form-field class="full-width">
-          <input formControlName="password1" matInput placeholder="password again" />
+      <div  style="display: flex;"  class="col-md-6">
+        <mat-form-field appearance="outline" class="full-width">
+          <input
+            formControlName="passwordAgain"
+            matInput
+            [type]="hide ? 'password' : 'text'"
+            placeholder="password again"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="hide = !hide"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide"
+          >
+            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+          </button>
         </mat-form-field>
-        <small class="text-danger" *ngIf="customerRegisterForm.get('password1')?.invalid && customerRegisterForm.get('password1')?.touched  " > password should contain atleast 8 characters </small>
-      </div> -->
+        <div>
+          <small style="margin-left: 5px; font-size: 15px; "
+            class="text-danger"
+            *ngIf="
+              customerRegisterForm.get('passwordAgain')?.invalid &&
+              customerRegisterForm.get('passwordAgain')?.touched
+            "
+            >please enter password again</small
+          >
+          <br>
+          <small style="margin-left: 5px; font-size: 15px; " class="text-danger" *ngIf="invalidPassword">
+            passwords does not match  
+          </small>
+        </div>
+      </div>
     </mat-card-content>
     <mat-card-actions>
       <button

@@ -183,18 +183,28 @@ class BranchAPI(APIView):
         print(request.data)
         data = request.data.get('form')
         branch_id = data['branch_id']
-        try:
-            branch = Branch.objects.get(branch_id= branch_id)
-            return Response({"message": "Branch Already exist" , "action_status": "failure"}, status=200)
-
-        except:
-            serializer = BranchSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"message": "New Branch Created", "action_status": "success"}, status=200)
-            else:
-                return Response({"message": "there is some issure, please try again later", "action_status": "failure"}, status=500)
-            # return Response({"message":"appointment not booked"} , status = 200 )
+        # branch = Branch.objects.filter(branch_id= branch_id).first()
+        # if branch:
+        #     return Response({"message": "Branch Already exist", "action_status": "failure"}, status=200)
+        serializer = BranchSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "New Branch Created", "action_status": "success"}, status=200)
+        else:
+            error_list = [serializer.errors[error][0] for error in serializer.errors]
+            return Response({"message":error_list,"action_status": "failure"}, status=200)
+        # try:
+        #     branch = Branch.objects.get(branch_id= branch_id)
+        #     return Response({"message": "Branch Already exist" , "action_status": "failure"}, status=200)
+        #
+        # except:
+        #     serializer = BranchSerializer(data=data)
+        #     if serializer.is_valid():
+        #         serializer.save()
+        #         return Response({"message": "New Branch Created", "action_status": "success"}, status=200)
+        #     else:
+        #         return Response({"message": "there is some issure, please try again later", "action_status": "failure"}, status=500)
+        #     # return Response({"message":"appointment not booked"} , status = 200 )
 
 
 

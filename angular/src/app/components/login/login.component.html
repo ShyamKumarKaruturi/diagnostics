@@ -2,19 +2,18 @@
   <mat-card style="background-color: #eee5f390">
     <mat-card-header>
       <mat-card-title style="color: #7710ab">Login</mat-card-title>
-      {{ responseMessage }}
-      <mat-card-title *ngIf="formNotValid"
-        >please Fill All required details</mat-card-title
-      >
+      <p style="color: red;" >{{ responseMessage }}</p>
+      <p style="color: red;" *ngIf="formNotValid"
+        >Please Fill All required details</p >
     </mat-card-header>
-    <br />
     <mat-card-content>
       <div class="row">
         <div class="col-md-6">
-          <mat-form-field class="full-width">
+          <mat-form-field appearance="outline" class="full-width">
             <input formControlName="username" matInput placeholder="username" />
           </mat-form-field>
-          <small
+          <div class="">
+            <small
             class="text-danger"
             *ngIf="
               loginForm.get('username')?.invalid &&
@@ -22,11 +21,12 @@
             "
             >Please enter password</small
           >
+          </div>
         </div>
       </div>
 
       <div class="col-md-6">
-        <mat-form-field class="full-width">
+        <mat-form-field appearance="outline" class="full-width">
           <input
             formControlName="password"
             matInput
@@ -45,7 +45,8 @@
           </button>
         </mat-form-field>
 
-        <small
+       <div class="">
+         <small
           class="text-danger"
           *ngIf="
             loginForm.get('password')?.invalid &&
@@ -53,6 +54,7 @@
           "
           >Please enter password</small
         >
+       </div>
       </div>
     </mat-card-content>
     <mat-card-actions>
