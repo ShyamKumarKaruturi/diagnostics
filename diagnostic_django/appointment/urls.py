@@ -6,7 +6,7 @@ urlpatterns = [
     path('book-appointment/', AppointmentAPI.as_view(), name='booking-appointment'),
     path('appointment/<int:id>/', DetailAppointment.as_view(), name='appointment'),
     path('branches/', BranchAPI.as_view(), name="branches"),
-    path('branch/<int:id>/', DetailBranch.as_view(), name="branch"),
+    path('branch/<id>/', DetailBranch.as_view(), name="branch"),
     path('labs/', LabAPI.as_view(), name="labs"),
     path('lab/', DetailLab.as_view(), name="lab"),
     path('bills/', BillAPI.as_view(), name="bills"),
@@ -15,6 +15,6 @@ urlpatterns = [
     path('reviews/', ReviewAPI.as_view(), name="reviews"),
     path('reports/', ReportAPI.as_view(), name="reports"),
 
-    path('get-employee/', get_employees, name='get-employee'),
+    # path('get-employee/', get_employees, name='get-employee'),
     path('get-details-for-booking-appointment/', DetailsForBooking.as_view(), name='get-details-for-booking-appointment')
 ]

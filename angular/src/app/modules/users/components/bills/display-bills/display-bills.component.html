@@ -8,6 +8,14 @@
       #input
     />
   </mat-form-field>
+   <button
+    style="right: 50px; position: absolute; margin-top: 1%"
+    routerLink="../../admin/book-appointment"
+    class="nabButton"
+    mat-button mat-raised-button="" color="primary"
+  >
+    Add New Bill  <mat-icon>add_box</mat-icon>
+  </button>
 
   <div style="width: 100%;">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table" matSort>

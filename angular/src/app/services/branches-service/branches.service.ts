@@ -26,7 +26,7 @@ export class BranchesService {
 
 
   updateBranch(id: any,data: any) {
-    return this.http.put<any>(`${baseUrl}appointments/branch/${id}`, data);
+    return this.http.put<any>(`${baseUrl}appointments/branch/${id}/`, data);
   }
 
   deleteBranch(id: any) {

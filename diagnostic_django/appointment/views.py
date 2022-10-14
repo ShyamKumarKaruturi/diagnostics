@@ -122,7 +122,34 @@ class AppointmentAPI(APIView):
 
 
 class DetailBranch(APIView):
-    pass
+
+    @staticmethod
+    def get(request, id):
+        branch = Branch.objects.get(branch_id=id)
+
+        serializer = BranchSerializer(branch, many=False)
+
+        return Response({'branch': serializer.data},status=200)
+    @staticmethod
+    def delete(request, id):
+        branch = Branch.objects.get(branch_id=id)
+        if branch:
+            branch.delete()
+            return JsonResponse(data={'success': 'Branch deleted successfully.'}, safe=False)
+        return JsonResponse(
+            data={'Failure': 'Branch doesn\'t exists . So, Branch could not be deleted successfully.'},
+            safe=False)
+    @staticmethod
+    def put(request,id):
+        # branch_data = JSONParser().parse(request)
+        data = request.data.get('form')
+        branch = Branch.objects.get(branch_id=id)
+        serializer = BranchSerializer(branch, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({"message": "Branch Created", "action_status": "success"}, status=status.HTTP_201_CREATED, safe=False)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
+
 
 class BranchAPI(APIView):
     @staticmethod
@@ -157,26 +184,7 @@ class BranchAPI(APIView):
                 return Response({"message": "there is some issure, please try again later", "action_status": "failure"}, status=500)
             # return Response({"message":"appointment not booked"} , status = 200 )
 
-    @staticmethod
-    def put(request):
-        # branch_data = JSONParser().parse(request)
-        data = request.data.get('form')
-        branch = Branch.objects.get(branch_id=data['id'])
-        serializer = BranchSerializer(branch, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED, safe=False)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
 
-    @staticmethod
-    def delete(request, id=""):
-        branch = Branch.objects.get(branch_id=id)
-        if branch:
-            branch.delete()
-            return JsonResponse(data={'success': 'Branch deleted successfully.'}, safe=False)
-        return JsonResponse(
-            data={'Failure': 'Branch doesn\'t exists . So, Branch could not be deleted successfully.'},
-            safe=False)
 
 
 class DetailLab(APIView):
@@ -480,22 +488,22 @@ class ReportAPI(APIView):
             safe=False)
 
 
-@api_view(['GET'])
-def get_employees(request):
-    if request.GET['role'] == 'doctor':
-        doctors = Staff.objects.filter(designation="Doctor")
-        serializer = EmployeeSerializer(doctors, many=True)
-        return Response(serializer.data, status=200)
-    if request.GET['role'] == 'nurse':
-        doctors = Staff.objects.filter(designation="Nurse")
-        serializer = EmployeeSerializer(doctors, many=True)
-        return Response(serializer.data, status=200)
-    if request.GET['role'] == 'lab':
-        doctors = Staff.objects.filter(designation="Lab Technician")
-        serializer = EmployeeSerializer(doctors, many=True)
-        return Response(serializer.data, status=200)
-    if request.GET['role'] == 'sample':
-        doctors = Staff.objects.filter(designation="Sample Collector")
-        serializer = EmployeeSerializer(doctors, many=True)
-        return Response(serializer.data, status=200)
-    return Response({"message": "not working"}, status=200)
+# @api_view(['GET'])
+# def get_employees(request):
+#     if request.GET['role'] == 'doctor':
+#         doctors = Staff.objects.filter(designation="Doctor")
+#         serializer = EmployeeSerializer(doctors, many=True)
+#         return Response(serializer.data, status=200)
+#     if request.GET['role'] == 'nurse':
+#         doctors = Staff.objects.filter(designation="Nurse")
+#         serializer = EmployeeSerializer(doctors, many=True)
+#         return Response(serializer.data, status=200)
+#     if request.GET['role'] == 'lab':
+#         doctors = Staff.objects.filter(designation="Lab Technician")
+#         serializer = EmployeeSerializer(doctors, many=True)
+#         return Response(serializer.data, status=200)
+#     if request.GET['role'] == 'sample':
+#         doctors = Staff.objects.filter(designation="Sample Collector")
+#         serializer = EmployeeSerializer(doctors, many=True)
+#         return Response(serializer.data, status=200)
+#     return Response({"message": "not working"}, status=200)

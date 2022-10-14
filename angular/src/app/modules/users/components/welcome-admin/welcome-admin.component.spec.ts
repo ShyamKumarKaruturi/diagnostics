@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DisplayComponent } from './display.component';
+import { WelcomeAdminComponent } from './welcome-admin.component';
 
-describe('DisplayComponent', () => {
-  let component: DisplayComponent;
-  let fixture: ComponentFixture<DisplayComponent>;
+describe('WelcomeAdminComponent', () => {
+  let component: WelcomeAdminComponent;
+  let fixture: ComponentFixture<WelcomeAdminComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DisplayComponent ]
+      declarations: [ WelcomeAdminComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DisplayComponent);
+    fixture = TestBed.createComponent(WelcomeAdminComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -9,11 +9,15 @@ import { SubjectServiceService } from 'src/app/services/subject-service/subject-
 })
 export class NavbarComponent implements OnInit {
   loggedIn : any
+  userType : string=''
   constructor(private subjectService : SubjectServiceService) { }
 
   ngOnInit(): void {
     this.subjectService.isLoggedInSubject.subscribe(data=>{
       this.loggedIn = data
+    })
+    this.subjectService.userTypeSubject.subscribe(data=>{
+      this.userType = data
     })
   }
 }

@@ -42,8 +42,6 @@ export class DisplayBillsComponent implements AfterViewInit,OnInit {
         this.bills = data;
         this.bills = JSON.parse(this.bills);
         this.dataSource.data = this.bills;
-        console.log(this.bills[0]);
-
         console.log(this.dataSource);
       },
       error: (err) => {
@@ -51,6 +49,7 @@ export class DisplayBillsComponent implements AfterViewInit,OnInit {
       },
     });
   }
+  
 
   displayedColumns: string[] = [
     'bill id',

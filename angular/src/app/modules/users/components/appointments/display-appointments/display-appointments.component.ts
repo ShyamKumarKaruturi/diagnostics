@@ -69,7 +69,7 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   getAppointments(){
     this.appointments_service.getAppointments().subscribe({
       next: (data: any) => {
-        console.log(data);
+        // console.log(data);
         this.appointments = data.appointments;
         this.tests = data.related_tests;
         this.tests = JSON.parse(this.tests);
@@ -77,7 +77,6 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
         this.appointments = JSON.parse(this.appointments);
         console.log('After', this.appointments, this.tests);
         this.dataSource.data = this.appointments;
-        console.log(this.dataSource);
       },
       error: (err) => {
         console.log(err);

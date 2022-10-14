@@ -10,11 +10,11 @@
   </mat-form-field>
   <button
     style="right: 50px; position: absolute; margin-top: 1%"
-    routerLink="../users/display-appointments"
+    routerLink="../../admin/book-appointment"
     class="nabButton"
-    mat-button
+    mat-button mat-raised-button="" color="primary"
   >
-    Add Appointment
+    Add Appointment   <mat-icon>add_box</mat-icon>
   </button>
 
   <div>
@@ -128,9 +128,9 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Booked Tests</th>
         <td mat-cell *matCellDef="let row; let i = index">
           <mat-accordion>
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>
+            <mat-expansion-panel >
+              <mat-expansion-panel-header  >
+                <mat-panel-title >
                   {{ tests[i].length }}
                   <mat-icon>event_note</mat-icon></mat-panel-title
                 >
@@ -171,7 +171,7 @@
     </table>
 
     <mat-paginator
-      [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageSizeOptions]="[ 10, 25, 100]"
       aria-label="Select page of users"
     ></mat-paginator>
   </div>

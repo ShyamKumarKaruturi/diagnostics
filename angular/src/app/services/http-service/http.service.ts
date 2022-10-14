@@ -10,6 +10,7 @@ const baseUrl = 'http://127.0.0.1:8000/';
 export class HttpService {
   constructor(private http: HttpClient) {}
 
+
  
   getDetailsForAppointmentBooking(): Observable<Object> {
     return this.http.get<any>(`${baseUrl}${'appointments/get-details-for-booking-appointment/'}`);
@@ -26,8 +27,11 @@ export class HttpService {
       data
     );
   }
-  getUsers() {
+  getCustomers() {
     return this.http.get('http://127.0.0.1:8000/users/register-customer/');
+  }
+  getCustomer(customer_id:string){
+    return this.http.get(`http://127.0.0.1:8000/users/customer/${customer_id}`)
   }
   getBranches() {
     return this.http.get('http://127.0.0.1:8000/users/branch/');

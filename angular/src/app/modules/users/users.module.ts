@@ -41,9 +41,14 @@ import { DisplayTestsComponent } from './components/tests/display-tests/display-
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CloseDialogComponent } from './components/close-dialog/close-dialog.component';
-import { DisplayComponent } from './components/display/display.component';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
-
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { WelcomeAdminComponent } from './components/welcome-admin/welcome-admin.component';
+import { DisplayCustomersComponent } from './components/display-customers/display-customers.component';
+import { DisplayEmployeesComponent } from './components/display-employees/display-employees.component';
+import { DisplayCustomerComponent } from './components/display-customer/display-customer.component';
 @NgModule({
   declarations: [
     RegisterCustomerComponent,
@@ -67,7 +72,11 @@ import { DisplayComponent } from './components/display/display.component';
     NewTestComponent,
     DisplayTestsComponent,
     CloseDialogComponent,
-    DisplayComponent,
+    SidenavComponent,
+    WelcomeAdminComponent,
+    DisplayCustomersComponent,
+    DisplayEmployeesComponent,
+    DisplayCustomerComponent,
   ],
   entryComponents:[CloseDialogComponent],
   imports: [
@@ -90,7 +99,9 @@ import { DisplayComponent } from './components/display/display.component';
     MatTableModule,
     MatExpansionModule,
     MatToolbarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSidenavModule,
+    MatTabsModule
   ],
   bootstrap: [
   ]

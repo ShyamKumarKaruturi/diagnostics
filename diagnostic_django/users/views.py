@@ -1,4 +1,4 @@
-# import json
+import json
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from appointment import serializers
@@ -13,6 +13,7 @@ from  rest_framework import exceptions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import APIException
 
+from appointment.serializers import AppointmentSerializer
 from .authentication import create_access_token,create_refresh_token , decode_access_token,decode_refresh_token
 from users.serializers import UserSerializer, CustomerSerializer, EmployeeSerializer
 from .models import User, Customer, Staff
@@ -41,6 +42,16 @@ from django.contrib.auth import authenticate, login, logout
 #         # print(user_obj)
 #         # print(serializer)
 #     return Response({"msg":"not created"},status =400)
+class DetailCustomer(APIView):
+    # @staticmethod
+    def get(self,request,customer_id):
+        customer = Customer.objects.filter(customer_id = customer_id).first()
+        # user_data = User.objects.filter(id=customer.user_id.id).first()
+        customer_serializer = CustomerSerializer(customer,many=False)
+        user_serializer = UserSerializer(customer.user_id, many=False)
+        appointments = customer.appointment_set.all()
+        appointments= AppointmentSerializer(appointments,many=True)
+        return Response({"customer_details":customer_serializer.data,"user_details":user_serializer.data,'appointments':appointments.data}, status=status.HTTP_201_CREATED,)
 
 
 class RegisterCustomer(APIView):
@@ -70,9 +81,15 @@ class RegisterCustomer(APIView):
                 return Response({'message': "invalid"})
 
     def get(self, request):
-        users = Customer.objects.all()
-        serializer = CustomerSerializer(users, many=True)
-        return Response(serializer.data, status=200)
+        customers = Customer.objects.all()
+        # users = list(users.values(
+        #     'customer_id','user_id','user_id.username','user_id.mobile_number','user_id.age','user_id.address','user_id.pincode',
+        # ))
+        customers = list(customers.values(
+            'customer_id','user_id__username'
+        ))
+        # serializer = CustomerSerializer(users, many=True)
+        return Response({'customers':json.dumps(customers)}, status=200)
 
 
 class RegisterEmployee(APIView):
