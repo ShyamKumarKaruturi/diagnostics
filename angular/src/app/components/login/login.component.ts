@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthInterceptor } from 'src/app/interceptors/auth.interceptor';
 import { HttpServiceService } from 'src/app/modules/users/http-service.service';
 import { SubjectServiceService } from 'src/app/services/subject-service/subject-service.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  hide: boolean = false;
+  hide: boolean = true;
   formNotValid: boolean = false;
   responseMessage: string = '';
-  constructor(private http: HttpServiceService, private router: Router, private subjectService: SubjectServiceService) { }
+  constructor(private http: HttpServiceService, private router: Router, private subjectService: SubjectServiceService,private activatedRoute : ActivatedRoute) { }
 
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', Validators.required),
@@ -38,7 +39,17 @@ export class LoginComponent implements OnInit {
               'username': resp.username,
               'user_type_id': resp.user_type_id
             })
-            this.router.navigate([""])
+            if(resp.user_type == "admin"){
+              let returnUrl = this.activatedRoute.snapshot.queryParamMap.get('returnUrl');
+              this.router.navigate([returnUrl || 'admin'])
+            }
+            if(resp.user_type == "customer"){
+              this.router.navigate([""])
+            }
+            if(resp.user_type == "admin"){
+
+              this.router.navigate(["admin"])
+            }
           }
         },
         error: (err: any) => {
@@ -53,4 +64,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void { }
+
+  
 }

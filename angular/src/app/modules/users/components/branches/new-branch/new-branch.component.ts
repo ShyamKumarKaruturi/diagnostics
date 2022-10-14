@@ -36,13 +36,15 @@ export class NewBranchComponent implements OnInit {
   });
 
   onSubmit(){
+    this.branchForm.get('branch_id')?.setValue(this.branchForm.get('branch_id')?.value.trim())
+    this.branchForm.get('branch_name')?.setValue(this.branchForm.get('branch_name')?.value.trim())
+    this.branchForm.get('location')?.setValue(this.branchForm.get('location')?.value.trim())
     if(this.branchForm.valid){
       this.formNotValid = false
       if(this.branch_id){
         this.http.updateBranch(this.branch_id, { 'form': this.branchForm.value }).subscribe({
           next: (resp) => {
             this.responseMessage = resp.message
-            
             if (resp.action_status == "success") {
               this.router.navigate(['admin/display-branches'])
             }

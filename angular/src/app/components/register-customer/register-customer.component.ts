@@ -47,24 +47,25 @@ export class RegisterCustomerComponent implements OnInit {
     }
     else{
       this.invalidPassword = false
+      if (this.customerRegisterForm.valid) {
+        this.http.registerCustomer(this.customerRegisterForm.value).subscribe(data => {
+          this.errorMessage = data.message
+          if (this.errorMessage == "registered") {
+            this.router.navigate(['/login'])
+          }
+        })
+      }
+      else {
+        console.log('fill properly ');
+        this.formNotValid = true
+        console.log(this.customerRegisterForm.valid);
+
+      }
     }
 
 
 
-    if (this.customerRegisterForm.valid) {
-      this.http.registerCustomer(this.customerRegisterForm.value).subscribe(data => {
-        this.errorMessage = data.message
-        if (this.errorMessage == "registered") {
-          this.router.navigate(['/login'])
-        }
-      })
-    }
-    else {
-      console.log('fill properly ');
-      this.formNotValid = true
-      console.log(this.customerRegisterForm.valid);
-
-    }
+    
 
   }
 }

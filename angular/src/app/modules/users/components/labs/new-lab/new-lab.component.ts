@@ -13,6 +13,7 @@ export class NewLabComponent implements OnInit {
 
   responseMessage: string = '';
   formNotValid: boolean = false;
+  formError?: string = ""
   branches : any
   constructor(private http : LabsService, private router: Router , private branchHttp : BranchesService) {
     this.branchHttp.getBranches().subscribe({
@@ -32,6 +33,8 @@ export class NewLabComponent implements OnInit {
     });
 
     onSubmit() {
+      this.labForm.get('lab_id')?.setValue(this.labForm.get('lab_id')?.value.trim())
+      this.labForm.get('lab_name')?.setValue(this.labForm.get('lab_name')?.value.trim())
       if (this.labForm.valid) {
         this.formNotValid = false
         this.http.createLab({ 'form': this.labForm.value }).subscribe({
@@ -49,7 +52,7 @@ export class NewLabComponent implements OnInit {
       else {
         this.formNotValid = true
       }
-    }
+    } 
   ngOnInit(): void {
   }
 

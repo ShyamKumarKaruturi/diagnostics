@@ -66,21 +66,21 @@ export class RegisterEmployeeComponent implements OnInit {
     }
     else {
       this.invalidPassword = false
-    }
-    if (this.employeeRegisterForm.valid && this.designationControl.valid && this.branchControl.valid ) {
-      this.formNotValid = false
-      this.user_data = { ...this.employeeRegisterForm.value  ,"branch": this.branchControl.value, 'designation': this.designationControl.value}
-      this.http.registerEmployee(this.user_data).subscribe(data => {
-        console.log(data)
-        this.errorMessage = data.message
-        if (this.errorMessage == "registered") {
-          this.router.navigate(['home'])
-        }
-      })
-    }
-    else {
-      this.formNotValid = true
-      
+      if (this.employeeRegisterForm.valid && this.designationControl.valid && this.branchControl.valid ) {
+        this.formNotValid = false
+        this.user_data = { ...this.employeeRegisterForm.value  ,"branch": this.branchControl.value, 'designation': this.designationControl.value}
+        this.http.registerEmployee(this.user_data).subscribe(data => {
+          console.log(data)
+          this.errorMessage = data.message
+          if (this.errorMessage == "registered") {
+            this.router.navigate(['home'])
+          }
+        })
+      }
+      else {
+        this.formNotValid = true
+        
+      }
     }
 
   }

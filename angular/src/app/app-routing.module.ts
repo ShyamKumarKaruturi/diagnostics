@@ -7,6 +7,7 @@ import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { RegisterCustomerComponent } from './components/register-customer/register-customer.component';
+import { AdminGaurdGuard } from './gaurds/admin-gaurd.guard';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -17,6 +18,7 @@ const routes: Routes = [
 
   {
     path: 'admin',
+    canActivate: [AdminGaurdGuard],
     loadChildren: () =>
       import('./modules/users/users.module').then((m) => m.UsersModule),
   },

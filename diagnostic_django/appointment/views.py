@@ -205,16 +205,15 @@ class LabAPI(APIView):
     @staticmethod
     def get(request, id=""):
         try:
-            if id == "":
-                labs = list(Lab.objects.all().values(
-                    'lab_id', 'lab_name',  'branch__branch_id',
-                    'branch__branch_name'
-                ))
-                # serializer = LabSerializer(labs, many=True)
-            else:
-                labs = Lab.objects.get(appointment_id=id).values('lab_id', 'lab_name',  'branch__branch_id'
-                                                                 ,'branch__branch_name')
-                serializer = LabSerializer(labs, many=False)
+            labs = list(Lab.objects.all().values(
+                'lab_id', 'lab_name', 'branch__branch_id',
+                'branch__branch_name'
+            ))
+            # serializer = LabSerializer(labs, many=True)
+
+            # labs = Lab.objects.get(appointment_id=id).values('lab_id', 'lab_name',  'branch__branch_id'
+            #                                                  ,'branch__branch_name')
+            # serializer = LabSerializer(labs, many=False)
         except Exception as error:
             return Response(str(error), status=500)
         return Response({'labs':json.dumps(labs)}, status=200)
@@ -224,19 +223,14 @@ class LabAPI(APIView):
     def post(request):
         print(request.data)
         data = request.data.get('form')
-        lab_id = data['lab_id']
-        print(data)
-        try:
-            lab = Lab.objects.get(lab_id=lab_id)
-            return Response({"message": "Lab Already exist" , "action_status": "failure"}, status=200)
-        except:
-            serializer = LabSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"message": "New Lab Created" , "action_status": "success"}, status=200)
-            else:
-                return Response({"message": "there is some issure, please try again later" , "action_status": "failure"}, status=500)
-            # return Response({"message":"appointment not booked"} , status = 200 )
+        serializer = LabSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "New Lab Created" , "action_status": "success"}, status=200)
+        else:
+            error_list = [serializer.errors[error][0] for error in serializer.errors]
+            return Response({"message": error_list, "action_status": "failure"}, status=200)
+        # return Response({"message":"appointment not booked"} , status = 200 )
 
     @staticmethod
     def put(request):

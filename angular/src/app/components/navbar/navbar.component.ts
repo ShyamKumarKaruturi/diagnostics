@@ -1,6 +1,7 @@
-import { NonNullAssert } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { SubjectServiceService } from 'src/app/services/subject-service/subject-service.service';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -9,15 +10,20 @@ import { SubjectServiceService } from 'src/app/services/subject-service/subject-
 })
 export class NavbarComponent implements OnInit {
   loggedIn : any
-  userType : string=''
-  constructor(private subjectService : SubjectServiceService) { }
+  isCustomer :boolean =false
+  constructor(private subjectService: SubjectServiceService , private router :Router) { }
 
   ngOnInit(): void {
     this.subjectService.isLoggedInSubject.subscribe(data=>{
       this.loggedIn = data
     })
-    this.subjectService.userTypeSubject.subscribe(data=>{
-      this.userType = data
-    })
+  }
+  navigateCustomer(){
+    if(this.loggedIn){
+      this.router.navigate(["customer/booking/"])
+    }
+    else{
+      this.router.navigate(["login/"])
+    } 
   }
 }

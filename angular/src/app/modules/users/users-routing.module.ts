@@ -30,11 +30,11 @@ const routes: Routes = [
     { path: 'update-branch/:branch_id', component: NewBranchComponent},
     { path: 'create-lab', component: NewLabComponent},
     { path: 'create-test', component: NewTestComponent},
-    { path: '', component: WelcomeAdminComponent},
+    { path: 'welcome', component: WelcomeAdminComponent},
     { path: 'dislplay-employees', component: DisplayEmployeesComponent},
     { path: 'display-customers', component: DisplayCustomersComponent},
     { path: 'display-customer/:cutomer_id', component: DisplayCustomerComponent},
-    // { path: '', redirectTo:'display-appointments',pathMatch:"full"}
+    { path: '', redirectTo:'welcome',pathMatch:"full"}
   ]}
 ];
 

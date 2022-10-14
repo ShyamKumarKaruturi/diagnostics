@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./display-employees.component.css']
 })
 export class DisplayEmployeesComponent implements OnInit {
-
+  employees :any
+  
   constructor() { }
 
   ngOnInit(): void {

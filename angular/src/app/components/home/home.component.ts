@@ -16,14 +16,7 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.http.get("http://127.0.0.1:8000/users/user/").subscribe({
-      next: (resp: any) => {
-        this.user = resp.username
-      },
-      error: () => {
-        this.router.navigate(['users/login'])
-      }
-    })
+    
   }
 
 }

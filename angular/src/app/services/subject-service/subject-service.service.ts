@@ -11,7 +11,7 @@ export class SubjectServiceService {
   loggedIn : boolean = false
   public usernameSubject = new BehaviorSubject("");
   public isLoggedInSubject =  new BehaviorSubject(false)
-  public userTypeSubject = new BehaviorSubject("customer")
+  public userTypeSubject = new BehaviorSubject("")
   public userTypeIdSubject = new BehaviorSubject("")
 
   constructor(
@@ -29,13 +29,12 @@ export class SubjectServiceService {
       error: () => {
         this.usernameSubject.next("")
         this.isLoggedInSubject.next(false)
-        this.userTypeSubject.next("customer")
+        this.userTypeSubject.next("")
         this.userTypeIdSubject.next("")
         this.loggedIn = false
       }
     })
    }
-
   sendLoginDetails(data : any){
     this.usernameSubject.next(data['username'])
     this.isLoggedInSubject.next(true)
@@ -47,7 +46,7 @@ export class SubjectServiceService {
   logoutService(){
     this.usernameSubject.next("")
     this.isLoggedInSubject.next(false)
-    this.userTypeSubject.next("customer")
+    this.userTypeSubject.next("")
     this.userTypeIdSubject.next("")
     this.loggedIn = false
   }
