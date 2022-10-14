@@ -42,6 +42,7 @@ export class NewBranchComponent implements OnInit {
         this.http.updateBranch(this.branch_id, { 'form': this.branchForm.value }).subscribe({
           next: (resp) => {
             this.responseMessage = resp.message
+            
             if (resp.action_status == "success") {
               this.router.navigate(['admin/display-branches'])
             }

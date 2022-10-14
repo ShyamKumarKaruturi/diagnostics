@@ -61,7 +61,7 @@ class RegisterCustomer(APIView):
         try:
             user = User.objects.get(username=username)
             print(user)
-            return Response({'message': "User  Exist"})
+            return Response({'message': "username already exist "})
         except:
             data = request.data
             data['user_type'] = 'customer'
@@ -189,7 +189,7 @@ class LoginView(APIView):
             return Response({"message": "user does not exist"}, status=200)
         user = authenticate(request, username=username, password=password)
         if user is None:
-            return Response({'message': "incorrect password"}, status=200)
+            return Response({'message': "Incorrect Password! "}, status=200)
         else:
             if user.user_type == 'customer':
                 user_type_obj = Customer.objects.filter(user_id = user.id).first()
