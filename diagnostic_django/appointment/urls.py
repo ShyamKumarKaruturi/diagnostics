@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from .view_manager import *
 
 urlpatterns = [
 
@@ -17,4 +18,5 @@ urlpatterns = [
 
     # path('get-employee/', get_employees, name='get-employee'),
     path('get-details-for-booking-appointment/', DetailsForBooking.as_view(), name='get-details-for-booking-appointment')
+    # path('get-details-for-booking-appointment/', AppointmentManager.as_view(), name='get-details-for-booking-appointment')
 ]

@@ -50,7 +50,7 @@ export class BookAppointmentComponent implements OnInit {
     })
 
     if (this.id) {
-      // console.log(this.id);   
+      // console.log(this.id);
       this.appointment_service.getAppointment(this.id).subscribe({
         next: (resp: any) => {
           this.appointment = resp.appointment
@@ -98,7 +98,6 @@ export class BookAppointmentComponent implements OnInit {
         this.lab_technicians = JSON.parse(this.lab_technicians);
         this.sample_collectors = data.sample_collectors;
         this.sample_collectors = JSON.parse(this.sample_collectors);
-
       },
       error: (err) => {
         console.log(err.data);
