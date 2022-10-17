@@ -42,6 +42,7 @@ export class SubjectServiceService {
     this.userTypeSubject.next(data['user_type'])
     this.userTypeIdSubject.next(data['user_type_id'])
     this.loggedIn = true
+    window.localStorage.setItem('login_details', JSON.stringify(data))
   }
 
   logoutService(){

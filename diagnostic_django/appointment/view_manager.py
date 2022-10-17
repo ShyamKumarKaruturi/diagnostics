@@ -60,7 +60,7 @@ class AppointmentsDetails:
 
     def get_complete_appointments_data():
         appointments = Appointment.objects.all()
-        appointments_tests = []
+        appointments_tests=[]
         for appointment in appointments:
             each_appointment_tests = list(appointment.tests.all().values(
                 'test_id', 'test_name', 'test_description'
@@ -77,16 +77,16 @@ class AppointmentsDetails:
         appointments = json.dumps(appointments)
         return (appointments, appointments_tests_data)
     
-    def get_staff_related_appointments_data(id:str, designation: str):
+    def get_staff_related_appointments_data(staff_id: str, designation: str):
         query = Q()
         if designation == "Doctor":
-            query &= Q(doctor_id__user_id=id)
+            query &= Q(doctor_id_id=staff_id)
         elif designation == "Nurse":
-            query &= Q(nurse_id__user_id=id)
+            query &= Q(nurse_id_id=staff_id)
         elif designation == "Lab Technician":
-            query &= Q(lab_technician__user_id=id)
+            query &= Q(lab_technician_id=staff_id)
         elif designation == "Sample Collector":
-            query &= Q(sample_collector__user_id=id)
+            query &= Q(sample_collector_id=staff_id)
         appointments = Appointment.objects.filter(query)
         appointments = list(appointments.values(
             'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot', 'status',

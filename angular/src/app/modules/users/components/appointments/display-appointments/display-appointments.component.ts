@@ -38,8 +38,11 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   appointments: any;
   tests: any;
   dataSource: MatTableDataSource<AppointmentData>;
+  login_details: any;
   user_id: any;
   user_type!: string;
+  user_username!: string;
+  isAdmin: boolean= false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -50,15 +53,25 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   }
 
   displayedColumns!: string[];
+  displayedColumnsForAdmin!: string[];
+  DisplayedColumnsForStaff!: string[];
+
 
   getAppointments() {
+    this.login_details = window.localStorage.getItem('login_details');
+    this.login_details = JSON.parse(this.login_details);
     // this.subjectService.userTypeIdSubject.subscribe(id =>{
     //     this.user_id= id
     // })
     // this.subjectService.userTypeSubject.subscribe(user_type =>{
     //   this.user_type= user_type
     // })
-    this.appointments_service.getAppointments(this.user_id).subscribe({
+    console.log(this.login_details)
+    this.user_id = this.login_details.user_type_id;
+    this.user_type = this.login_details.user_type;
+    this.user_username = this.login_details.username;
+    // console.log(this.user_id,this.user_type)
+    this.appointments_service.getAppointments(this.user_username).subscribe({
       next: (data: any) => {
         console.log(this.user_id)
         this.appointments = data.appointments;
@@ -68,6 +81,8 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
         }
         this.appointments = JSON.parse(this.appointments);
         this.dataSource.data = this.appointments;
+        console.log(this.appointments, this.tests)
+        this.setAppointmentsAccordingToUser();
       },
       error: (err) => {
         console.log(err);
@@ -77,7 +92,8 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
 
   setAppointmentsAccordingToUser() {
     if (this.user_type === "admin") {
-      displayedColumnsForAdmin = [
+      // this.displayedColumns = [
+      this.displayedColumnsForAdmin = [
         'appointment id',
         'customer id',
         'customer name',
@@ -96,9 +112,12 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
         'delete',
         'update',
       ];
+      this.isAdmin = true;
+      this.displayedColumns = this.displayedColumnsForAdmin;
     }
-    else if (this.user_type === "doctor"){
-      this.statusCompletedDisplayedColumnsForDoctor = [
+    else if (this.user_type === "doctor") {
+      // this.displayedColumns = [
+      this.DisplayedColumnsForStaff = [
         'appointment id',
         'customer id',
         'customer name',
@@ -106,6 +125,7 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
         'slot',
         'status',
       ];
+      this.displayedColumns = this.DisplayedColumnsForStaff;
     }
   }
 

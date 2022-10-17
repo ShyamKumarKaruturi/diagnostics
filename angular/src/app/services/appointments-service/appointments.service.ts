@@ -12,8 +12,9 @@ export class AppointmentsService {
 
   // Appointments Services.
 
-  getAppointments(id : any): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`, id);
+  getAppointments(username: any): Observable<Object> {
+    console.log(username);
+    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`, { params: { 'username':username } });
   }
   setAppointment(data: any) {
     return this.http.post<any>(`${baseUrl}${'appointments/book-appointment/'}`, data);
