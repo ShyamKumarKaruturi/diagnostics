@@ -4,6 +4,8 @@ from .views import *
 urlpatterns = [
 
     path('book-appointment/', AppointmentAPI.as_view(), name='booking-appointment'),
+    path('search-appointment/', FilterAppointment.as_view(), name='search-appointment'),
+    path('customer-appointments/<cust_id>/', CustomerAppointments.as_view(), name='customer-appointments'),
     path('appointment/<int:id>/', DetailAppointment.as_view(), name='appointment'),
     path('branches/', BranchAPI.as_view(), name="branches"),
     path('branch/<id>/', DetailBranch.as_view(), name="branch"),

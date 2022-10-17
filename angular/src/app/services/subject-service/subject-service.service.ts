@@ -9,6 +9,8 @@ import {BehaviorSubject} from 'rxjs'
 export class SubjectServiceService {
 
   loggedIn : boolean = false
+  isCustomer : boolean = false
+  
   public usernameSubject = new BehaviorSubject("");
   public isLoggedInSubject =  new BehaviorSubject(false)
   public userTypeSubject = new BehaviorSubject("")
@@ -25,6 +27,10 @@ export class SubjectServiceService {
         this.userTypeSubject.next(data['user_type'])
         this.userTypeIdSubject.next(data['user_type_id'])
         this.loggedIn = true
+        if (data['user_type']){
+          this.isCustomer  = true
+        }
+        localStorage.setItem("customerId", data['user_type_id'])
       },
       error: () => {
         this.usernameSubject.next("")
@@ -32,6 +38,7 @@ export class SubjectServiceService {
         this.userTypeSubject.next("")
         this.userTypeIdSubject.next("")
         this.loggedIn = false
+        this.isCustomer = false
       }
     })
    }
@@ -41,6 +48,9 @@ export class SubjectServiceService {
     this.userTypeSubject.next(data['user_type'])
     this.userTypeIdSubject.next(data['user_type_id'])
     this.loggedIn = true
+    if (data['user_type']) {
+      this.isCustomer = true
+    }
   }
 
   logoutService(){
@@ -49,5 +59,6 @@ export class SubjectServiceService {
     this.userTypeSubject.next("")
     this.userTypeIdSubject.next("")
     this.loggedIn = false
+    this.isCustomer = false
   }
 }

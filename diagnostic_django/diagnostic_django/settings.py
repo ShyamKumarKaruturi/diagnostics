@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'appointment.apps.AppointmentConfig',
     'rest_framework',
+    'django_filters',
     'corsheaders',
 ]
 
@@ -110,7 +111,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER':'users.exceptions.status_code_handler'
+    'EXCEPTION_HANDLER':'users.exceptions.status_code_handler',
+    # 'DEFAULT_FILTER_BACKENDS':('django_filters.rest_framework.DjangoFilterBackend','rest_framework.filters.SearchFilter')
 }
 
 # Internationalization

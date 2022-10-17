@@ -49,6 +49,7 @@ import { WelcomeAdminComponent } from './components/welcome-admin/welcome-admin.
 import { DisplayCustomersComponent } from './components/display-customers/display-customers.component';
 import { DisplayEmployeesComponent } from './components/display-employees/display-employees.component';
 import { DisplayCustomerComponent } from './components/display-customer/display-customer.component';
+import { SearchComponent } from './components/search/search.component';
 @NgModule({
   declarations: [
     RegisterCustomerComponent,
@@ -77,6 +78,7 @@ import { DisplayCustomerComponent } from './components/display-customer/display-
     DisplayCustomersComponent,
     DisplayEmployeesComponent,
     DisplayCustomerComponent,
+    SearchComponent,
   ],
   entryComponents:[CloseDialogComponent],
   imports: [

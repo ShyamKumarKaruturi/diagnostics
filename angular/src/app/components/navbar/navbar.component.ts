@@ -17,6 +17,7 @@ export class NavbarComponent implements OnInit {
     this.subjectService.isLoggedInSubject.subscribe(data=>{
       this.loggedIn = data
     })
+    
   }
   navigateCustomer(){
     if(this.loggedIn){
@@ -26,4 +27,5 @@ export class NavbarComponent implements OnInit {
       this.router.navigate(["login/"])
     } 
   }
+
 }

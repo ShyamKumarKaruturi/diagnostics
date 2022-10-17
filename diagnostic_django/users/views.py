@@ -24,24 +24,7 @@ from django.contrib.auth import authenticate, login, logout
 
 
 
-# @api_view(['POST','PUT'])
-# def registerCustomer(request):
-#     if request.method == 'POST':
-#         print(request.data)
-#         print(request)
-#         # data = json.parse(request)
 
-#         serializer = UserSerializer(data = request.data)
-#         if serializer.is_valid():
-#             user = serializer.save()
-#             customer_obj = CustomerSerializer(data = {"customer_id":"MEDC"+str(user.id),"user_id":user.id})
-#             if customer_obj.is_valid():
-#                 customer_obj.save()
-
-#             return Response(serializer.data)
-#         # print(user_obj)
-#         # print(serializer)
-#     return Response({"msg":"not created"},status =400)
 class DetailCustomer(APIView):
     # @staticmethod
     def get(self,request,customer_id):
@@ -53,20 +36,38 @@ class DetailCustomer(APIView):
         appointments= AppointmentSerializer(appointments,many=True)
         return Response({"customer_details":customer_serializer.data,"user_details":user_serializer.data,'appointments':appointments.data}, status=status.HTTP_201_CREATED,)
 
+    def delete(self,request,customer_id):
+        customer = Customer.objects.filter(customer_id=customer_id).first()
+        if customer:
+            customer.delete()
+            return JsonResponse(data={'success': 'Customer deleted successfully.'}, safe=False)
+        else:
+            return JsonResponse(data={'success': 'customer is not deleted successfully.'}, safe=False)
+        return JsonResponse(
+            data={'Failure': 'Appointment Doesn\'t exists . So, Appointment Data cound not be deleted successfully.'},
+            safe=False)
+
+    def put(self,request,customer_id):
+        data = request.data.get('form')
+        customer = Customer.objects.get(branch_id=id)
+        serializer = CustomerSerializer(customer, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({"message": "Customer Updated", "action_status": "success"},
+                                status=status.HTTP_201_CREATED, safe=False)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
 
 class RegisterCustomer(APIView):
     def post(self, request):
         print(request.data)
         username = request.data['username']
-        try:
-            user = User.objects.get(username=username)
-            print(user)
+        user = User.objects.filter(username=username).first()
+        if user:
             return Response({'message': "username already exist "})
-        except:
+        else:
             data = request.data
             data['user_type'] = 'customer'
             serializer = UserSerializer(data=data)
-            print(serializer)
             if serializer.is_valid():
                 user = serializer.save()
                 customer_obj = CustomerSerializer(data={"customer_id": "MEDC" + str(user.id), "user_id": user.id})
@@ -74,11 +75,13 @@ class RegisterCustomer(APIView):
                     customer_obj.save()
                     return Response({'data': serializer.data, 'message': "registered"}, status=200)
                 else:
-                    print('invalid')
-                    return Response(customer_obj.errors, status=status.HTTP_400_BAD_REQUEST)
+                    error_list = [customer_obj.errors[error][0] for error in customer_obj.errors]
+                    return Response(error_list, status=status.HTTP_400_BAD_REQUEST)
             else:
-                print('invalid')
-                return Response({'message': "invalid"})
+                error_list = [serializer.errors[error][0] for error in serializer.errors]
+                return Response({"message": error_list}, status=200)
+
+
 
     def get(self, request):
         customers = Customer.objects.all()
@@ -95,18 +98,16 @@ class RegisterCustomer(APIView):
 class RegisterEmployee(APIView):
     def post(self, request):
         username = request.data['username']
-        try:
-            user = User.objects.get(username=username)
-            print(user)
-            return Response({'message': "User Exist"})
-        except:
+        user = User.objects.filter(username=username).first()
+        if user:
+            return Response({'message': "username already exist "})
+        else:
             serializer = UserSerializer(
-                data={'username': request.data["username"], "first_name": request.data["first_name"],
-                      'last_name': request.data["last_name"], 'email': request.data['email'],
-                      "mobile_number": request.data["mobile_number"], "age": int(request.data['age']),
-                      'address': request.data['address'], "pincode": request.data['pincode'],
-                      "password": request.data['password'], "user_type": 'staff'})
-            print(serializer)
+                    data={'username': request.data["username"], "first_name": request.data["first_name"],
+                          'last_name': request.data["last_name"], 'email': request.data['email'],
+                          "mobile_number": request.data["mobile_number"], "age": int(request.data['age']),
+                          'address': request.data['address'], "pincode": request.data['pincode'],
+                          "password": request.data['password'], "user_type": 'staff'})
             if serializer.is_valid():
                 user = serializer.save()
                 employee_obj = EmployeeSerializer(data={"staff_id": "MEDS" + str(user.id), "user_id": user.id,
@@ -116,15 +117,15 @@ class RegisterEmployee(APIView):
                                                         "years_of_experience": int(request.data[
                                                                                    'years_of_experience']) or 0,
                                                         'branch': request.data['branch']})
-                print(employee_obj)
                 if employee_obj.is_valid():
                     employee_obj.save()
                     return Response({'data': serializer.data, 'message': "registered"}, status=200)
                 else:
-                    return Response({'message': "not valid"}, status=status.HTTP_400_BAD_REQUEST)
+                    error_list = [employee_obj.errors[error][0] for error in employee_obj.errors]
+                    return Response(error_list, status=status.HTTP_400_BAD_REQUEST)
             else:
-                print('invalid')
-                return Response({'message': "not valid"})
+                error_list = [serializer.errors[error][0] for error in serializer.errors]
+                return Response(error_list, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
         users = Customer.objects.all()
@@ -139,36 +140,6 @@ class BranchHandler(APIView):
         return Response(serializer.data, status=200)
 
 
-@csrf_exempt
-@api_view(['POST'])
-def loginUser(request):
-    if request.method == 'POST':
-        username = request.data.get("username")
-        password = request.data.get('password')
-        try:
-            user = User.objects.get(username=username)
-        except:
-            return Response({'msg': "User Does not Exist"})
-        # user = User.objects.get(username=username)
-        # if not user:
-        #     raise APIException("invalid credentials")
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            user_data = Customer.objects.filter(user_id=user)
-            if len(user_data)==0:
-                user_data = Staff.objects.filter(user_id=user)[0]
-                print(user_data)
-                user_data = EmployeeSerializer(instance=user_data, many=False)
-            else:
-                user_data = user_data[0]
-                user_data = CustomerSerializer(instance=user_data, many=False)
-            user = UserSerializer(instance=user, many=False)
-            return Response({'msg': "logged in", 'user': user.data, 'user_data': user_data.data}, status=200)
-        else:
-            return Response({'msg': "password incorrect"})
-
-    return Response({"msg": "not created"}, status=200)
 
 
 @csrf_exempt
@@ -200,10 +171,8 @@ class LoginView(APIView):
             else:
                 user_type_id = user.id
 
-
         access_token = create_access_token(user.id)
         refresh_token = create_refresh_token(user.id)
-        print(refresh_token)
         response = Response()
 
         response.set_cookie(key='refreshToken' , value= refresh_token , httponly = True) # refresh token in cookie n access token in response data
@@ -217,6 +186,7 @@ class LoginView(APIView):
         return response
 
         # return Response({"message": "logged out", 'user': user.username}, status=200)
+
 
 @csrf_exempt
 @api_view(['GET'])

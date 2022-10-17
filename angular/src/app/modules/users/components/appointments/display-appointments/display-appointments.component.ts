@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
+  import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -34,14 +34,18 @@ export interface AppointmentData {
 })
 export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   appointments: any;
+  searchedAppointments: any;
   tests: any;
+  searchedTests: any;
   dataSource: MatTableDataSource<AppointmentData>;
+  searchText !: string
+
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatAccordion) accordion!: MatAccordion;
 
-  constructor(private appointments_service: AppointmentsService , public dialog: MatDialog , private router :Router) {
+  constructor(private appointments_service: AppointmentsService, public dialog: MatDialog, private router: Router) {
     this.dataSource = new MatTableDataSource(this.appointments);
   }
 
@@ -65,16 +69,13 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
     'update',
   ];
 
-  getAppointments(){
+  getAppointments() {
     this.appointments_service.getAppointments().subscribe({
       next: (data: any) => {
-        // console.log(data);
         this.appointments = data.appointments;
         this.tests = data.related_tests;
         this.tests = JSON.parse(this.tests);
-        console.log('Before', this.appointments);
         this.appointments = JSON.parse(this.appointments);
-        console.log('After', this.appointments, this.tests);
         this.dataSource.data = this.appointments;
       },
       error: (err) => {
@@ -114,9 +115,33 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
       }
     })
   }
-  
 
-  updateAppointment(id : any){
-    this.router.navigate(['admin/edit-appointment' , id])
+  updateAppointment(id: any) {
+    this.router.navigate(['admin/edit-appointment', id])
+  }
+
+
+  // search bar
+
+  onSearchTextEntered(searchValue: string) {
+    if (searchValue.length >= 3) {
+      this.searchText = searchValue
+      console.log(this.searchText);
+      this.appointments_service.getSearchedAppointments(this.searchText).subscribe({
+        next: (data: any) => {
+          this.searchedAppointments = data.appointments;
+          this.searchedTests = data.related_tests;
+          this.searchedTests = JSON.parse(this.searchedTests);
+          this.searchedAppointments = JSON.parse(this.searchedAppointments);
+          this.dataSource.data = this.searchedAppointments;
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+    }
+    else if (searchValue.length ==0){
+      this.dataSource.data = this.appointments;
+    }
   }
 }

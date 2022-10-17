@@ -15,12 +15,16 @@ export class AppointmentsService {
   getAppointments(): Observable<Object> {
     return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`);
   }
+  getSearchedAppointments(text:any): Observable<Object> {
+    let queryParams = { "text": text };
+    return this.http.get<any>(`${baseUrl}${'appointments/search-appointment/'}`, { params: queryParams });
+  }
   setAppointment(data: any) {
     return this.http.post<any>(`${baseUrl}${'appointments/book-appointment/'}`, data);
   }
 
   getAppointment(id: any): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}appointments/appointment/${id}/`);
+    return this.http.get<any>(`${baseUrl} `);
   }
 
   updateAppointment(id :any , data: any) {

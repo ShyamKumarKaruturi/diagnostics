@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatAccordion } from '@angular/material/expansion';
 import { CloseDialogComponent } from '../../close-dialog/close-dialog.component';
 import { BranchesService } from 'src/app/services/branches-service/branches.service';
 import { Router } from '@angular/router';

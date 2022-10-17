@@ -4,7 +4,7 @@ from  rest_framework import exceptions
 def create_access_token(id):
     return jwt.encode({
         'user_id' : id,
-        'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=5),
+        'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=15),
         'iat' : datetime.datetime.utcnow()
     },'access_secret_key' , algorithm = 'HS256')
 

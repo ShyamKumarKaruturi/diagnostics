@@ -18,7 +18,7 @@ const routes: Routes = [
 
   {
     path: 'admin',
-    canActivate: [AdminGaurdGuard],
+    // canActivate: [AdminGaurdGuard],
     loadChildren: () =>
       import('./modules/users/users.module').then((m) => m.UsersModule),
   },
@@ -28,7 +28,7 @@ const routes: Routes = [
       import('./modules/customer/customer.module').then(
         (m) => m.CustomerModule
       ),
-  },
+  },  
 
   { path: '**', component: NotFoundComponent },
 ];

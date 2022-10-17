@@ -78,7 +78,7 @@
         <button routerLink="../../admin/book-appointment"
           mat-button
           mat-raised-button="" class="update">Update</button>
-        <button routerLink="../../admin/book-appointment"
+        <button (click)="openDialog(customerDetails['customer_id'])" 
           mat-button
           mat-raised-button="" class="delete">Delete</button>
       </div>

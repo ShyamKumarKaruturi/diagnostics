@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class User(AbstractUser):
-    mobile_number = models.CharField(max_length=12, default=0)
+    mobile_number = models.CharField(max_length=10, default=0)
     age = models.IntegerField(null=True, blank=True)
     address = models.TextField(max_length=200)
     pincode = models.CharField(max_length=8, null=True,blank=True)
