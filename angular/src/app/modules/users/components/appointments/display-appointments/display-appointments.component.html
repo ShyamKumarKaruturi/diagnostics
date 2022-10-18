@@ -1,3 +1,4 @@
+<h1 style="text-align: center; margin-top:20px;font-size:30px;font-weight:bolder;color:rgb(94, 30, 153)">Appointments</h1>
 <app-search (searchTextChanged)="onSearchTextEntered($event)" ></app-search>
 
 <div class="table-container">
@@ -30,22 +31,22 @@
       <!-- Customer ID Column -->
       <ng-container matColumnDef="customer id">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer ID</th>
-        <td mat-cell *matCellDef="let row">{{ row.user__customer_id }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.customer_id }}</td>
       </ng-container>
 
       <!-- Customer Name Column -->
       <ng-container matColumnDef="customer name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.user__user_id__username }}
+          {{ row.username }}
         </td>
       </ng-container>
 
       <!-- Date Column -->
-      <!-- <ng-container matColumnDef="date">
+      <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-      <td mat-cell *matCellDef="let row">{{ row.date }}</td>
-    </ng-container> -->
+      <td mat-cell *matCellDef="let row">{{ row.date | date:"dd/MM/yyyy"}}</td>
+    </ng-container>
 
       <!-- Slot Column -->
       <ng-container matColumnDef="slot">
@@ -54,40 +55,40 @@
       </ng-container>
 
       <!-- Doctor ID Column -->
-      <ng-container matColumnDef="doctor id">
+      <!-- <ng-container matColumnDef="doctor id">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor ID</th>
         <td mat-cell *matCellDef="let row">{{ row.doctor_id__staff_id }}</td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Doctor Name Column -->
       <ng-container matColumnDef="doctor">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.doctor_id__user_id__username }}
+          {{ row.doctor  || "Not Assigned"}}
         </td>
       </ng-container>
 
       <!-- Nurse ID Column -->
-      <ng-container matColumnDef="nurse id">
+      <!-- <ng-container matColumnDef="nurse id">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Nurse ID</th>
         <td mat-cell *matCellDef="let row">{{ row.nurse_id__staff_id }}</td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Nurse Name Column -->
       <ng-container matColumnDef="nurse">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Nurse</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.nurse_id__user_id__username }}
+          {{ row.nurse || "Not Assigned"}}
         </td>
       </ng-container>
 
       <!-- Lab Technician ID Column -->
-      <ng-container matColumnDef="lab technician id">
+      <!-- <ng-container matColumnDef="lab technician id">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Lab Tech ID</th>
         <td mat-cell *matCellDef="let row">
           {{ row.lab_technician__staff_id }}
         </td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Lab Technician Name Column -->
       <ng-container matColumnDef="lab technician">
@@ -95,19 +96,19 @@
           Lab Technician
         </th>
         <td mat-cell *matCellDef="let row">
-          {{ row.lab_technician__user_id__username }}
+          {{ row.lab_technician || "Not Assigned" }}
         </td>
       </ng-container>
 
       <!-- Sample Collector ID Column -->
-      <ng-container matColumnDef="sample collector id">
+      <!-- <ng-container matColumnDef="sample collector id">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           Sample Coll. ID
         </th>
         <td mat-cell *matCellDef="let row">
           {{ row.sample_collector__staff_id }}
         </td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Sample Collector Name Column -->
       <ng-container matColumnDef="sample collector">
@@ -115,7 +116,7 @@
           Sample Collector
         </th>
         <td mat-cell *matCellDef="let row">
-          {{ row.sample_collector__user_id__username }}
+          {{ row.sample_collector|| "Not Assigned" }}
         </td>
       </ng-container>
 
@@ -179,4 +180,3 @@
   </div>
 </div>
 
-added

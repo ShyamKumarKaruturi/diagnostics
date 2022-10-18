@@ -37,7 +37,7 @@ export class RegisterCustomerComponent implements OnInit {
           this.customerRegisterForm.get('address')?.setValue(data["user_details"]['address'])
           this.customerRegisterForm.get('pincode')?.setValue(data["user_details"]['pincode'])
           this.customerRegisterForm.get('password')?.setValue(data["user_details"]['password'])
-          this.customerRegisterForm.get('passwordAgain')?.setValue(data["user_details"]['passwordAgain'])
+          this.customerRegisterForm.get('passwordAgain')?.setValue(data["user_details"]['password'])
         },
         error: (err: any) => {
           console.log(err);

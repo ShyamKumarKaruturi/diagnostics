@@ -29,6 +29,8 @@ export class DisplayBranchesComponent implements AfterViewInit,OnInit {
     'update',
     'delete'
   ];
+  searchText !: string
+  searchedBranches : any
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -85,8 +87,26 @@ export class DisplayBranchesComponent implements AfterViewInit,OnInit {
       }
     })
   }
+  onSearchTextEntered(searchValue: string) {
+    // console.log(searchValue);
+    if (searchValue.length > 0) {
+      this.searchText = searchValue
+      this.branchService.getSearchedBranches(this.searchText).subscribe({
+        next: (data: any) => {
+          this.searchedBranches = data.branches;
+          this.dataSource.data = this.searchedBranches;
+        },
+        error: (err:any) => {
+          console.log(err);
+        },
+      });
+    }
+    else if (searchValue.length == 0) {
+      this.dataSource.data = this.branches
 
+  }
 
 
 }
 
+}

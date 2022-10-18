@@ -66,8 +66,8 @@ export class DisplayCustomersComponent implements OnInit {
 
   // search
   onSearchTextEntered(searchValue: string){
-    console.log(searchValue);
-    if (searchValue.length >= 3) {
+    // console.log(searchValue);
+    if (searchValue.length >0) {
       this.searchText = searchValue
       this.http.getSearchedCustomers(this.searchText).subscribe({
         next: (data: any) => {

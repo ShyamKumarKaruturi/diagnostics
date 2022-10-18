@@ -12,17 +12,17 @@ import { Router } from '@angular/router';
 export interface AppointmentData {
   appointment_id: string;
   customer_id: string;
-  customer_name: string;
-  // date: string;
+  username: string;
+  date: string;
   slot: string;
   tests: string;
-  doctor_id: string;
+  // doctor_id: string;
   doctor: string;
-  nurse_id: string;
+  // nurse_id: string;
   nurse: string;
-  lab_technician_id: string;
+  // lab_technician_id: string;
   lab_technician: string;
-  sample_collector_id: string;
+  // sample_collector_id: string;
   sample_collector: string;
   status: string;
 }
@@ -53,15 +53,15 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
     'appointment id',
     'customer id',
     'customer name',
-    // 'date',
+    'date',
     'slot',
-    'doctor id',
+    // 'doctor id',
     'doctor',
-    'nurse id',
+    // 'nurse id',
     'nurse',
-    'lab technician id',
+    // 'lab technician id',
     'lab technician',
-    'sample collector id',
+    // 'sample collector id',
     'sample collector',
     'status',
     'tests',
@@ -73,9 +73,11 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
     this.appointments_service.getAppointments().subscribe({
       next: (data: any) => {
         this.appointments = data.appointments;
+        console.log(data);
+        
         this.tests = data.related_tests;
         this.tests = JSON.parse(this.tests);
-        this.appointments = JSON.parse(this.appointments);
+        // this.appointments = JSON.parse(this.appointments);
         this.dataSource.data = this.appointments;
       },
       error: (err) => {
@@ -124,14 +126,13 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   // search bar
 
   onSearchTextEntered(searchValue: string) {
-    if (searchValue.length >= 3) {
+    if (searchValue.length>0) {
       this.searchText = searchValue
       this.appointments_service.getSearchedAppointments(this.searchText).subscribe({
         next: (data: any) => {
           this.searchedAppointments = data.appointments;
           this.searchedTests = data.related_tests;
           this.searchedTests = JSON.parse(this.searchedTests);
-          this.searchedAppointments = JSON.parse(this.searchedAppointments);
           this.dataSource.data = this.searchedAppointments;
         },
         error: (err) => {

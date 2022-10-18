@@ -22,8 +22,7 @@ export class AppointmentsComponent implements OnInit {
         this.appointments = data.appointments
         this.tests = data.related_tests;
         this.tests = JSON.parse(this.tests);
-        this.appointments = JSON.parse(this.appointments);
-        console.log(data);
+        console.log(this.appointments);
          },
       error: (err) => {
         console.log(err);

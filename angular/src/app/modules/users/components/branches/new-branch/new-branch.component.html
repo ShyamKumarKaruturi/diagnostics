@@ -1,10 +1,10 @@
 <form style="margin-top: 5%" [formGroup]="branchForm" class="form-container">
   <mat-card style="background-color: #eee5f390">
     <mat-card-header>
-      <mat-card-title *ngIf="!branch_id" style="color: #7710ab"
+      <mat-card-title *ngIf="!branchId" style="color: #7710ab"
         >Add New Branch</mat-card-title
       >
-      <mat-card-title *ngIf="branch_id" style="color: #7710ab"
+      <mat-card-title *ngIf="branchId" style="color: #7710ab"
         >Edit Branch</mat-card-title
       >
       <!-- <p *ngFor="let error of responseMessage " >{{error}} <br> </p> -->
@@ -20,7 +20,7 @@
 
     <mat-card-content>
       <div class="row">
-        <div class="col-md-6">
+        <div *ngIf="!branchId" class="col-md-6">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Branch ID</mat-label>
             <input
@@ -75,7 +75,7 @@
       </div>
     </mat-card-content>
     <mat-card-actions>
-      <button  *ngIf="!branch_id"
+      <button  *ngIf="!branchId"
         (click)="onSubmit()"
         mat-raised-button=""
         style="
@@ -89,7 +89,7 @@
       >
         Add
       </button>
-      <button  *ngIf="branch_id"
+      <button  *ngIf="branchId"
         (click)="onSubmit()"
         mat-raised-button=""
         style="

@@ -86,6 +86,7 @@ import { SearchComponent } from './components/search/search.component';
     UsersRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    
     // angular material
     MatFormFieldModule,
     MatInputModule,

@@ -14,19 +14,33 @@ export class CustomerBookingComponent implements OnInit {
   branches: any
   errorMessage : boolean = false
   data : any
+  todayDate: Date = new Date();
+  tests : any
+
   constructor(private http: CustomerServiceService, private router: Router, private httpUser: HttpServiceService , 
     private subjectService : SubjectServiceService) { }
   bookAppointmentForm: FormGroup = new FormGroup({
     branch: new FormControl("", Validators.required),
     slot: new FormControl("", Validators.required),
+    date: new FormControl("", Validators.required),
+    tests: new FormControl("", Validators.required),
   })
   ngOnInit(): void {
     this.httpUser.getBranches().subscribe(data => {
       this.branches = data
       console.log(this.branches)
     })
+    this.httpUser.getTests().subscribe({
+      next:(data:any)=>{
+          this.tests = data['tests']
+          console.log(this.tests)
+      }
+    } )
+
   }
   bookAppointment(){
+    console.log(this.bookAppointmentForm.get("date")?.value);
+    
     if(this.bookAppointmentForm.valid){
       this.data = this.bookAppointmentForm.value
       this.subjectService.userTypeIdSubject.subscribe(customer_id =>{

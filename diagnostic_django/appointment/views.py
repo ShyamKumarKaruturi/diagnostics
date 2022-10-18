@@ -88,19 +88,13 @@ class FilterAppointment(APIView):
             each_appointment_tests = list(appointment.tests.all().values(
                 'test_id', 'test_name', 'test_description'
             ))
-            # serializer = TestSerializer(each_appointment_tests, many=True)
+            serializer = TestSerializer(each_appointment_tests, many=True)
             appointments_tests.append(each_appointment_tests)
         appointments_tests_data = json.dumps(appointments_tests)
-        appointments = list(appointments.values(
-            'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot',
-            'doctor_id__staff_id', 'doctor_id__user_id__username',
-            'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
-            'lab_technician__user_id__username',
-            'sample_collector__staff_id', 'sample_collector__user_id__username', 'status',
-        ))
-        # serializer = AppointmentSerializer(appointments, many=True)
-        return Response({'appointments': json.dumps(appointments), 'related_tests': appointments_tests_data},
+        serializer = GetAppointmentSerializer(appointments, many=True)
+        return Response({'appointments': serializer.data, 'related_tests': appointments_tests_data},
                         status=200)
+
 
 class AppointmentAPI(APIView):
     @staticmethod
@@ -111,18 +105,11 @@ class AppointmentAPI(APIView):
             each_appointment_tests = list(appointment.tests.all().values(
                 'test_id', 'test_name', 'test_description'
             ))
-            # serializer = TestSerializer(each_appointment_tests, many=True)
+            serializer = TestSerializer(each_appointment_tests, many=True)
             appointments_tests.append(each_appointment_tests)
         appointments_tests_data = json.dumps(appointments_tests)
-        appointments = list(appointments.values(
-            'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot',
-            'doctor_id__staff_id', 'doctor_id__user_id__username',
-            'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
-            'lab_technician__user_id__username',
-            'sample_collector__staff_id', 'sample_collector__user_id__username', 'status',
-        ))
-        # serializer = AppointmentSerializer(appointments, many=True)
-        return Response({'appointments': json.dumps(appointments), 'related_tests': appointments_tests_data},
+        serializer = GetAppointmentSerializer(appointments, many=True)
+        return Response({'appointments': serializer.data, 'related_tests': appointments_tests_data},
                     status=200)
     # return Response(json.dumps(serializer.data), status=200)
 
@@ -148,20 +135,19 @@ class CustomerAppointments(APIView):
             each_appointment_tests = list(appointment.tests.all().values(
                 'test_id', 'test_name', 'test_description'
             ))
-            # serializer = TestSerializer(each_appointment_tests, many=True)
+            serializer = TestSerializer(each_appointment_tests, many=True)
             appointments_tests.append(each_appointment_tests)
         appointments_tests_data = json.dumps(appointments_tests)
-        appointments = list(appointments.values(
-            'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot',
-            'doctor_id__staff_id', 'doctor_id__user_id__username',
-            'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
-            'lab_technician__user_id__username',
-            'sample_collector__staff_id', 'sample_collector__user_id__username', 'status',
-        ))
-        # serializer = AppointmentSerializer(appointments, many=True)
-        return Response({'appointments': json.dumps(appointments), 'related_tests': appointments_tests_data},
+        serializer = GetAppointmentSerializer(appointments, many=True)
+        return Response({'appointments': serializer.data, 'related_tests': appointments_tests_data},
                         status=200)
 
+class FilterBranches(APIView):
+    def get(self,request):
+        text = request.GET['text']
+        branches = Branch.objects.filter(Q(branch_id__icontains=text) | Q(branch_name__icontains=text)| Q(location__icontains=text))
+        serializer = BranchSerializer(branches, many=True)
+        return Response({"branches":serializer.data}, status=200)
 
 class DetailBranch(APIView):
     @staticmethod
@@ -186,7 +172,11 @@ class DetailBranch(APIView):
         if serializer.is_valid():
             serializer.save()
             return JsonResponse({"message": "Branch Created", "action_status": "success"}, status=status.HTTP_201_CREATED, safe=False)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
+        # return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
+        else:
+            error_list = [serializer.errors[error][0] for error in serializer.errors]
+            return Response({"message":error_list,"action_status": "failure"}, status=200)
+
 
 
 class BranchAPI(APIView):
@@ -201,7 +191,7 @@ class BranchAPI(APIView):
     def post(request):
         print(request.data)
         data = request.data.get('form')
-        branch_id = data['branch_id']
+        # branch_id = data['branch_id']
         # branch = Branch.objects.filter(branch_id= branch_id).first()
         # if branch:
         #     return Response({"message": "Branch Already exist", "action_status": "failure"}, status=200)
@@ -264,14 +254,10 @@ class LabAPI(APIView):
 
 class TestAPI(APIView):
     @staticmethod
-    def get(request, id=""):
-
-        tests = list(Test.objects.all().values(
-            'test_id', 'test_type', 'test_name', 'test_description', 'lab__lab_id', 'lab__lab_name'
-        ))
-        # serializer = LabSerializer(tests, many=True)
-        return Response(json.dumps(tests), status=200)
-        # return Response(json.dumps(serializer.data), status=200)
+    def get(request):
+        tests = Test.objects.all()
+        serializer = TestSerializer(tests, many=True)
+        return Response({"tests": serializer.data , "action_status": "success"}, status=200)
 
     @staticmethod
     def post(request):

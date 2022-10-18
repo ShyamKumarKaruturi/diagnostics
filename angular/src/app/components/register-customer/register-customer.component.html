@@ -1,7 +1,8 @@
 <form [formGroup]="customerRegisterForm" class="form-container">
   <mat-card style="background-color: #eee5f352">
     <mat-card-header>
-      <mat-card-title style="color: #7710ab">Register Customer</mat-card-title>
+      <mat-card-title *ngIf="customerId" style="color: #7710ab">Update Customer</mat-card-title>
+      <mat-card-title *ngIf="!customerId" style="color: #7710ab">Register Customer</mat-card-title>
       {{ errorMessage }}
       <mat-card-title
         style="color: red; margin-left: 1.5%; font-size: 13px; width: 100%"
@@ -164,7 +165,7 @@
             </div>
           </mat-form-field>
       </div>
-      <div style="display: flex;" class="col-md-6">
+      <div *ngIf="!customerId" style="display: flex;" class="col-md-6">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>password</mat-label>
           <input
@@ -201,7 +202,7 @@
           </div>
         </mat-form-field>
       </div>
-      <div  style="display: flex;"  class="col-md-6">
+      <div *ngIf="!customerId"  style="display: flex;"  class="col-md-6">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>password again</mat-label>
           <input
@@ -237,7 +238,7 @@
       </div>
     </mat-card-content>
     <mat-card-actions>
-      <button
+      <button *ngIf="!customerId"
         style="color: #3f1651; background-color: #c3a1d5; margin-left: 3%"
         (click)="submitRegister()"
         mat-raised-button=""
@@ -245,7 +246,15 @@
       >
         Register
       </button>
-      <button
+      <button *ngIf="customerId"
+        style="color: #3f1651; background-color: #c3a1d5; margin-left: 3%"
+        (click)="submitRegister()"
+        mat-raised-button=""
+        color="primary"
+      >
+        Update
+      </button>
+      <button *ngIf="!customerId"
         style="color: #3f1651; background-color: #c3a1d5"
         routerLink="../login"
         mat-raised-button=""

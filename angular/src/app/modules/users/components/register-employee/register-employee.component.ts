@@ -73,7 +73,7 @@ export class RegisterEmployeeComponent implements OnInit {
           console.log(data)
           this.errorMessage = data.message
           if (this.errorMessage == "registered") {
-            this.router.navigate(['home'])
+            this.router.navigate(['admin/dislplay-employees'])
           }
         })
       }

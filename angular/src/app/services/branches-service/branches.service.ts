@@ -32,4 +32,9 @@ export class BranchesService {
   deleteBranch(id: any) {
     return this.http.delete<any>(`${baseUrl}appointments/branch/${id}`);
   }
+
+  getSearchedBranches(text:string){
+    let queryParams = { "text": text };
+    return this.http.get<any>(`${baseUrl}appointments/search-branches/`, { params: queryParams })
+  }
 }

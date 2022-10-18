@@ -39,4 +39,4 @@ class Staff(models.Model):
     branch = models.ForeignKey('appointment.Branch' , on_delete = models.CASCADE)
 
     def __str__(self):
-        return self.staff_id
+        return self.user_id.username

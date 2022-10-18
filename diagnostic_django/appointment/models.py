@@ -1,9 +1,15 @@
 from django.db import models
 from users.models import Customer, Staff
+from django.core.validators import RegexValidator
 
 
 class Branch(models.Model):
-    branch_id = models.CharField(max_length=10, primary_key=True)
+    branch_id = models.CharField(max_length=10, primary_key=True , validators=[
+        RegexValidator(
+            regex=r'^MEDB[0-9]{2}',
+            message=('Pattern is MEDB***(digits)'),
+        ),
+    ])
     branch_name = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
 
@@ -17,7 +23,12 @@ class Lab(models.Model):
         ('available', 'available'),
     )
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
-    lab_id = models.CharField(max_length=10, primary_key=True)
+    lab_id = models.CharField(max_length=10, primary_key=True, validators=[
+        RegexValidator(
+            regex=r'^MEDB[0-9]{2}',
+            message=('Pattern is MEDBL***(digits)'),
+        ),
+    ])
     lab_name = models.CharField(max_length=100)
     # lab_status = models.CharField(choices=STATUS, default='available', max_length=100)
 
@@ -26,7 +37,12 @@ class Lab(models.Model):
 
 
 class Test(models.Model):
-    test_id = models.CharField(max_length=10, primary_key=True)
+    test_id = models.CharField(max_length=10, primary_key=True, validators=[
+        RegexValidator(
+            regex=r'^MEDB[0-9]{2}',
+            message=('Pattern is MEDT***(digits)'),
+        ),
+    ])
     test_name = models.CharField(max_length=100)
     test_description = models.TextField(max_length=5000 , null=True)
     lab = models.ForeignKey(Lab, on_delete=models.SET_NULL, null=True)
@@ -60,7 +76,7 @@ class Appointment(models.Model):
     appointment_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=False)
     slot = models.CharField(choices=slots, max_length=100)
     tests = models.ManyToManyField(Test, blank=True, null=True, related_name="tests")
     doctor_id = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctor')
@@ -73,6 +89,9 @@ class Appointment(models.Model):
 
     def __str__(self):
         return str(self.appointment_id)
+
+    class Meta:
+        ordering = ['-date']
 
 
 class Bill(models.Model):

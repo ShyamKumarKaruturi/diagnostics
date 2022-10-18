@@ -8,6 +8,7 @@ urlpatterns = [
     path('customer-appointments/<cust_id>/', CustomerAppointments.as_view(), name='customer-appointments'),
     path('appointment/<int:id>/', DetailAppointment.as_view(), name='appointment'),
     path('branches/', BranchAPI.as_view(), name="branches"),
+    path('search-branches/', FilterBranches.as_view(), name="filterbranches"),
     path('branch/<id>/', DetailBranch.as_view(), name="branch"),
     path('labs/', LabAPI.as_view(), name="labs"),
     path('lab/', DetailLab.as_view(), name="lab"),

@@ -2,6 +2,7 @@ th {
   color: #7710ab;
   font-size:14px;
   background-color: #eee5f390;
+  /* justify-items: center; */
 }
 
 .mat-expansion-panel-header {

@@ -13,7 +13,7 @@ import { HttpService } from 'src/app/services/http-service/http.service';
 })
 export class BookAppointmentComponent implements OnInit {
   // update
-
+  todayDate: Date = new Date();
   id: any
   appointment: any
   relatedTests: any
@@ -66,6 +66,7 @@ export class BookAppointmentComponent implements OnInit {
           this.bookAppointmentForm.get('slot')?.setValue(this.appointment.slot)
           this.bookAppointmentForm.get('status')?.setValue(this.appointment.status)
           this.bookAppointmentForm.get('tests')?.setValue(this.appointment.tests)
+          this.bookAppointmentForm.get('date')?.setValue(this.appointment.date)
 
         }
       })
@@ -81,6 +82,7 @@ export class BookAppointmentComponent implements OnInit {
     sample_collector: new FormControl("", Validators.required),
     status: new FormControl("", Validators.required),
     slot: new FormControl("", Validators.required),
+    date: new FormControl("", Validators.required),
     tests: new FormControl("", Validators.required),
   })
 
@@ -120,8 +122,7 @@ export class BookAppointmentComponent implements OnInit {
     }
     else {
       this.appointment_service.setAppointment({ 'form': this.bookAppointmentForm.value }).subscribe(data => {
-        console.log(data);
-
+        this.router.navigate(['admin/display-appointments'])
       })
     }
   }

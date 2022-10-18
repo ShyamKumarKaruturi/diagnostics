@@ -5,3 +5,7 @@
 .detail{
     padding: 20px;
 }
+.details{
+    display: flex;
+    padding: 10px;
+}
