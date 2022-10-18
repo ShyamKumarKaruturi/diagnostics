@@ -126,7 +126,6 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   onSearchTextEntered(searchValue: string) {
     if (searchValue.length >= 3) {
       this.searchText = searchValue
-      console.log(this.searchText);
       this.appointments_service.getSearchedAppointments(this.searchText).subscribe({
         next: (data: any) => {
           this.searchedAppointments = data.appointments;

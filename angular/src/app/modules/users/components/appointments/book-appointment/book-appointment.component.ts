@@ -47,6 +47,8 @@ export class BookAppointmentComponent implements OnInit {
 
     this.actRouter.params.subscribe(data => {
       this.id = parseInt(data['id'])
+      console.log(this.id);
+      
     })
 
     if (this.id) {

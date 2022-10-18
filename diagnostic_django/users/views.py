@@ -9,6 +9,8 @@ from rest_framework.decorators import api_view
 from rest_framework.exceptions import APIException
 from rest_framework.authentication import get_authorization_header
 from  rest_framework import exceptions
+from django.db.models import Q
+
 # jwt
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import APIException
@@ -23,6 +25,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 
 
+class DetailStaff(APIView):
+    def get(self,request):
+        pass
 
 
 class DetailCustomer(APIView):
@@ -57,6 +62,18 @@ class DetailCustomer(APIView):
                                 status=status.HTTP_201_CREATED, safe=False)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
 
+
+class FilterCustomer(APIView):
+    def get(self,request):
+        text = request.GET['text']
+        customers = Customer.objects.filter(Q(customer_id__icontains=text) | Q(user_id__username__icontains=text))
+        customers = list(customers.values(
+            'customer_id', 'user_id__username'
+        ))
+        return Response({'customers': json.dumps(customers)}, status=200)
+
+
+
 class RegisterCustomer(APIView):
     def post(self, request):
         print(request.data)
@@ -80,7 +97,6 @@ class RegisterCustomer(APIView):
             else:
                 error_list = [serializer.errors[error][0] for error in serializer.errors]
                 return Response({"message": error_list}, status=200)
-
 
 
     def get(self, request):
@@ -128,9 +144,14 @@ class RegisterEmployee(APIView):
                 return Response(error_list, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        users = Customer.objects.all()
-        serializer = CustomerSerializer(users, many=True)
-        return Response(serializer.data, status=200)
+        staffs = Staff.objects.all()
+        # users = list(users.values(
+        #     'customer_id','user_id','user_id.username','user_id.mobile_number','user_id.age','user_id.address','user_id.pincode',
+        # ))
+        staffs = list(staffs.values(
+            'staff_id', 'user_id__username', 'designation'
+        ))
+        return Response({'staffs': json.dumps(staffs)}, status=200)
 
 
 class BranchHandler(APIView):

@@ -24,6 +24,9 @@ export class DisplayCustomersComponent implements OnInit {
     'username',
     'view'
   ];
+  searchText !: string
+  searchedCustomers: any;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatAccordion) accordion!: MatAccordion;
@@ -59,5 +62,27 @@ export class DisplayCustomersComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  // search
+  onSearchTextEntered(searchValue: string){
+    console.log(searchValue);
+    if (searchValue.length >= 3) {
+      this.searchText = searchValue
+      this.http.getSearchedCustomers(this.searchText).subscribe({
+        next: (data: any) => {
+          this.searchedCustomers = data.customers;
+          this.searchedCustomers = JSON.parse(this.searchedCustomers);
+          this.dataSource.data = this.searchedCustomers;
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+    }
+    else if (searchValue.length == 0) {
+      this.dataSource.data = this.customers;
+    }
+    
   }
 }

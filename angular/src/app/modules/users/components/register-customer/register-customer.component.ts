@@ -13,6 +13,7 @@ export class RegisterCustomerComponent implements OnInit {
   formNotValid : boolean = false
   formError ?: string =""
   errorMessage : string = ""
+  customerId !: string
   constructor(private http: HttpServiceService, private router: Router) { }
 
   customerRegisterForm: FormGroup = new FormGroup({
@@ -28,6 +29,7 @@ export class RegisterCustomerComponent implements OnInit {
     // password1: new FormControl(" ", Validators.minLength(8))
   })
   ngOnInit(): void {
+    
 
   }
   submitRegister() {
