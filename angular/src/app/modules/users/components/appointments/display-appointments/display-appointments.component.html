@@ -1,182 +1,556 @@
-<app-search (searchTextChanged)="onSearchTextEntered($event)" ></app-search>
+<div *ngIf="isAdmin">
+  <h1>appointments (updated)</h1>
+  <div class="table-container">
+    <mat-form-field appearance="standard">
+      <mat-label>Filter</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Type here to Search."
+        #input
+      />
+    </mat-form-field>
+    <button
+      style="right: 50px; position: absolute; margin-top: 1%"
+      routerLink="../../admin/book-appointment"
+      class="nabButton"
+      mat-button mat-raised-button="" color="primary"
+    >
+      Add Appointment   <mat-icon>add_box</mat-icon>
+    </button>
 
-<div class="table-container">
-  <mat-form-field appearance="standard">
-    <mat-label>Filter</mat-label>
-    <input
-      matInput
-      (keyup)="applyFilter($event)"
-      placeholder="Type here to Search."
-      #input
-    />
-  </mat-form-field>
-  <button
-    style="right: 50px; position: absolute; margin-top: 1%"
-    routerLink="../../admin/book-appointment"
-    class="nabButton"
-    mat-button mat-raised-button="" color="primary"
-  >
-    Add Appointment   <mat-icon>add_box</mat-icon>
-  </button>
+    <div>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table" matSort>
+        <!-- Appointment ID Column -->
+        <ng-container matColumnDef="appointment id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.appointment_id }}</td>
+        </ng-container>
 
-  <div>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table" matSort>
-      <!-- Appointment ID Column -->
-      <ng-container matColumnDef="appointment id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-        <td mat-cell *matCellDef="let row">{{ row.appointment_id }}</td>
-      </ng-container>
+        <!-- Customer ID Column -->
+        <ng-container matColumnDef="customer id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.user__customer_id }}</td>
+        </ng-container>
 
-      <!-- Customer ID Column -->
-      <ng-container matColumnDef="customer id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer ID</th>
-        <td mat-cell *matCellDef="let row">{{ row.user__customer_id }}</td>
-      </ng-container>
+        <!-- Customer Name Column -->
+        <ng-container matColumnDef="customer name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.user__user_id__username }}
+          </td>
+        </ng-container>
 
-      <!-- Customer Name Column -->
-      <ng-container matColumnDef="customer name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.user__user_id__username }}
-        </td>
-      </ng-container>
+        <!-- Date Column -->
+        <!-- <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let row">{{ row.date }}</td>
+      </ng-container> -->
 
-      <!-- Date Column -->
-      <!-- <ng-container matColumnDef="date">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-      <td mat-cell *matCellDef="let row">{{ row.date }}</td>
-    </ng-container> -->
+        <!-- Slot Column -->
+        <ng-container matColumnDef="slot">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Slot Time</th>
+          <td mat-cell *matCellDef="let row">{{ row.slot }}</td>
+        </ng-container>
 
-      <!-- Slot Column -->
-      <ng-container matColumnDef="slot">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Slot Time</th>
-        <td mat-cell *matCellDef="let row">{{ row.slot }}</td>
-      </ng-container>
+        <!-- Doctor ID Column -->
+        <ng-container matColumnDef="doctor id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.doctor_id__staff_id }}</td>
+        </ng-container>
 
-      <!-- Doctor ID Column -->
-      <ng-container matColumnDef="doctor id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor ID</th>
-        <td mat-cell *matCellDef="let row">{{ row.doctor_id__staff_id }}</td>
-      </ng-container>
+        <!-- Doctor Name Column -->
+        <ng-container matColumnDef="doctor">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.doctor_id__user_id__username }}
+          </td>
+        </ng-container>
 
-      <!-- Doctor Name Column -->
-      <ng-container matColumnDef="doctor">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.doctor_id__user_id__username }}
-        </td>
-      </ng-container>
+        <!-- Nurse ID Column -->
+        <ng-container matColumnDef="nurse id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nurse ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.nurse_id__staff_id }}</td>
+        </ng-container>
 
-      <!-- Nurse ID Column -->
-      <ng-container matColumnDef="nurse id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nurse ID</th>
-        <td mat-cell *matCellDef="let row">{{ row.nurse_id__staff_id }}</td>
-      </ng-container>
+        <!-- Nurse Name Column -->
+        <ng-container matColumnDef="nurse">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nurse</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.nurse_id__user_id__username }}
+          </td>
+        </ng-container>
 
-      <!-- Nurse Name Column -->
-      <ng-container matColumnDef="nurse">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nurse</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.nurse_id__user_id__username }}
-        </td>
-      </ng-container>
+        <!-- Lab Technician ID Column -->
+        <ng-container matColumnDef="lab technician id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Lab Tech ID</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.lab_technician__staff_id }}
+          </td>
+        </ng-container>
 
-      <!-- Lab Technician ID Column -->
-      <ng-container matColumnDef="lab technician id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Lab Tech ID</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.lab_technician__staff_id }}
-        </td>
-      </ng-container>
+        <!-- Lab Technician Name Column -->
+        <ng-container matColumnDef="lab technician">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Lab Technician
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.lab_technician__user_id__username }}
+          </td>
+        </ng-container>
 
-      <!-- Lab Technician Name Column -->
-      <ng-container matColumnDef="lab technician">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          Lab Technician
-        </th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.lab_technician__user_id__username }}
-        </td>
-      </ng-container>
+        <!-- Sample Collector ID Column -->
+        <ng-container matColumnDef="sample collector id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Sample Coll. ID
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.sample_collector__staff_id }}
+          </td>
+        </ng-container>
 
-      <!-- Sample Collector ID Column -->
-      <ng-container matColumnDef="sample collector id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          Sample Coll. ID
-        </th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.sample_collector__staff_id }}
-        </td>
-      </ng-container>
+        <!-- Sample Collector Name Column -->
+        <ng-container matColumnDef="sample collector">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Sample Collector
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.sample_collector__user_id__username }}
+          </td>
+        </ng-container>
 
-      <!-- Sample Collector Name Column -->
-      <ng-container matColumnDef="sample collector">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          Sample Collector
-        </th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.sample_collector__user_id__username }}
-        </td>
-      </ng-container>
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef >Status</th>
+          <td mat-cell *matCellDef="let row">{{ row.status }}</td>
+        </ng-container>
 
-      <!-- Status Column -->
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef >Status</th>
-        <td mat-cell *matCellDef="let row">{{ row.status }}</td>
-      </ng-container>
+        <!-- Tests Column -->
+        <ng-container matColumnDef="tests">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Booked Tests</th>
+          <td mat-cell *matCellDef="let row; let i = index">
+            <mat-accordion>
+              <mat-expansion-panel >
+                <mat-expansion-panel-header  >
+                  <mat-panel-title >
+                    {{ tests[i].length }}
+                    <mat-icon>event_note</mat-icon></mat-panel-title
+                  >
+                </mat-expansion-panel-header>
+                <h4 *ngFor="let test of tests[i]">{{ test.test_name }}</h4>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </td></ng-container
+        >
 
-      <!-- Tests Column -->
-      <ng-container matColumnDef="tests">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Booked Tests</th>
-        <td mat-cell *matCellDef="let row; let i = index">
-          <mat-accordion>
-            <mat-expansion-panel >
-              <mat-expansion-panel-header  >
-                <mat-panel-title >
-                  {{ tests[i].length }}
-                  <mat-icon>event_note</mat-icon></mat-panel-title
-                >
-              </mat-expansion-panel-header>
-              <h4 *ngFor="let test of tests[i]">{{ test.test_name }}</h4>
-            </mat-expansion-panel>
-          </mat-accordion>
-        </td></ng-container
-      >
+        <!-- Update Column -->
+        <ng-container matColumnDef="update">
+          <th mat-header-cell *matHeaderCellDef>Update</th>
+          <td mat-cell *matCellDef="let row">
+            <button (click)="updateAppointment(row.appointment_id)" mat-icon-button color="primary">
+              <mat-icon>update</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-      <!-- Update Column -->
-      <ng-container matColumnDef="update">
-        <th mat-header-cell *matHeaderCellDef>Update</th>
-        <td mat-cell *matCellDef="let row">
-          <button (click)="updateAppointment(row.appointment_id)" mat-icon-button color="primary">
-            <mat-icon>update</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+        <!-- Delete Column -->
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef>Delete</th>
+          <td mat-cell *matCellDef="let appointment">
+            <button  (click)="openDialog(appointment.appointment_id)" mat-icon-button color="danger">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-      <!-- Delete Column -->
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef>Delete</th>
-        <td mat-cell *matCellDef="let appointment">
-          <button  (click)="openDialog(appointment.appointment_id)" mat-icon-button color="danger">
-            <mat-icon>delete_outline</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+        <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
+        <tr mat-row *matRowDef="let row; columns: getDisplayedColumns()"></tr>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="12">Data Not Found!</td>
+        </tr>
+      </table>
 
-      <!-- Row shown when there is no matching data. -->
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="12">Data Not Found!</td>
-      </tr>
-    </table>
-
-    <mat-paginator
-      [pageSizeOptions]="[ 10, 25, 100]"
-      aria-label="Select page of users"
-    ></mat-paginator>
+      <mat-paginator
+        [pageSizeOptions]="[ 10, 25, 100]"
+        aria-label="Select page of users"
+      ></mat-paginator>
+    </div>
   </div>
-</div>
+  added
+  </div>
 
-added
+  <!-- Tables to be Displayed to the Doctor -->
+  <div *ngIf="isDoctor">
+  <!-- Pending Appointments Table -->
+  <h1>Pending Appointments</h1>
+  <div class="table-container">
+    <mat-form-field appearance="standard">
+      <mat-label>Filter</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Type here to Search."
+        #input
+      />
+    </mat-form-field>
+    <div>
+      <table mat-table [dataSource]="pendingAppointmentsDataSource" class="mat-elevation-z8 table" matSort>
+        <!-- Appointment ID Column -->
+        <ng-container matColumnDef="appointment id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.appointment_id }}</td>
+        </ng-container>
+
+        <!-- Customer ID Column -->
+        <ng-container matColumnDef="customer id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.user__customer_id }}</td>
+        </ng-container>
+
+        <!-- Customer Name Column -->
+        <ng-container matColumnDef="customer name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.user__user_id__username }}
+          </td>
+        </ng-container>
+
+        <!-- Date Column -->
+        <!-- <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let row">{{ row.date }}</td>
+      </ng-container> -->
+
+        <!-- Slot Column -->
+        <ng-container matColumnDef="slot">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Slot Time</th>
+          <td mat-cell *matCellDef="let row">{{ row.slot }}</td>
+        </ng-container>
+
+        <!-- Tests Column -->
+        <ng-container matColumnDef="tests">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Booked Tests</th>
+          <td mat-cell *matCellDef="let row; let i = index">
+            <mat-accordion>
+              <mat-expansion-panel >
+                <mat-expansion-panel-header  >
+                  <mat-panel-title >
+                    {{ tests[i].length }}
+                    <mat-icon>event_note</mat-icon></mat-panel-title
+                  >
+                </mat-expansion-panel-header>
+                <h4 *ngFor="let test of tests[i]">{{ test.test_name }}</h4>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </td></ng-container
+        >
+
+        <!-- Status Column -->
+        <!-- <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef >Status</th>
+          <td mat-cell *matCellDef="let row">{{ row.status }}</td>
+        </ng-container> -->
+
+        <!-- Approve Appointment Column -->
+        <ng-container matColumnDef="approve">
+          <th mat-header-cell *matHeaderCellDef>Approve</th>
+          <td mat-cell *matCellDef="let row">
+            <button (click)="approveAppointment(row.appointment_id)" mat-icon-button color="primary">
+              <mat-icon>update</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Reject Appointment Column -->
+        <ng-container matColumnDef="reject">
+          <th mat-header-cell *matHeaderCellDef>Reject</th>
+          <td mat-cell *matCellDef="let row">
+            <button (click)="rejectAppointment(row.appointment_id)" mat-icon-button color="primary">
+              <mat-icon>update</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsForPendingAppointments"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsForPendingAppointments"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="12">Data Not Found!</td>
+        </tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[ 10, 25, 100]"
+        aria-label="Select page of users"
+      ></mat-paginator>
+    </div>
+  </div>
+  <!-- Approved Appointments Table -->
+  <h1>Approved Appointments</h1>
+  <div class="table-container">
+    <mat-form-field appearance="standard">
+      <mat-label>Filter</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Type here to Search."
+        #input
+      />
+    </mat-form-field>
+    <div>
+      <table mat-table [dataSource]="approvedAppointmentsDataSource" class="mat-elevation-z8 table" matSort>
+        <!-- Appointment ID Column -->
+        <ng-container matColumnDef="appointment id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.appointment_id }}</td>
+        </ng-container>
+
+        <!-- Customer ID Column -->
+        <ng-container matColumnDef="customer id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.user__customer_id }}</td>
+        </ng-container>
+
+        <!-- Customer Name Column -->
+        <ng-container matColumnDef="customer name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.user__user_id__username }}
+          </td>
+        </ng-container>
+
+        <!-- Date Column -->
+        <!-- <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let row">{{ row.date }}</td>
+      </ng-container> -->
+
+        <!-- Slot Column -->
+        <ng-container matColumnDef="slot">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Slot Time</th>
+          <td mat-cell *matCellDef="let row">{{ row.slot }}</td>
+        </ng-container>
+
+        <!-- Tests Column -->
+        <ng-container matColumnDef="tests">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Booked Tests</th>
+          <td mat-cell *matCellDef="let row; let i = index">
+            <mat-accordion>
+              <mat-expansion-panel >
+                <mat-expansion-panel-header  >
+                  <mat-panel-title >
+                    {{ tests[i].length }}
+                    <mat-icon>event_note</mat-icon></mat-panel-title
+                  >
+                </mat-expansion-panel-header>
+                <h4 *ngFor="let test of tests[i]">{{ test.test_name }}</h4>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </td></ng-container
+        >
+
+        <!-- Status Column -->
+        <!-- <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef >Status</th>
+          <td mat-cell *matCellDef="let row">{{ row.status }}</td>
+        </ng-container> -->
+
+        <!-- Complete Appointment Column -->
+        <ng-container matColumnDef="completed">
+          <th mat-header-cell *matHeaderCellDef>Complete</th>
+          <td mat-cell *matCellDef="let row">
+            <button (click)="completeAppointment(row.appointment_id)" mat-icon-button color="primary">
+              <mat-icon>update</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsForApprovedAppointments"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsForApprovedAppointments"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="12">Data Not Found!</td>
+        </tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[ 10, 25, 100]"
+        aria-label="Select page of users"
+      ></mat-paginator>
+    </div>
+  </div>
+  <!-- Completed Appointments Table -->
+  <h1>Completed Appointments</h1>
+  <div class="table-container">
+    <mat-form-field appearance="standard">
+      <mat-label>Filter</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Type here to Search."
+        #input
+      />
+    </mat-form-field>
+    <div>
+      <table mat-table [dataSource]="completedAppointmentsDataSource" class="mat-elevation-z8 table" matSort>
+        <!-- Appointment ID Column -->
+        <ng-container matColumnDef="appointment id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.appointment_id }}</td>
+        </ng-container>
+
+        <!-- Customer ID Column -->
+        <ng-container matColumnDef="customer id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.user__customer_id }}</td>
+        </ng-container>
+
+        <!-- Customer Name Column -->
+        <ng-container matColumnDef="customer name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.user__user_id__username }}
+          </td>
+        </ng-container>
+
+        <!-- Date Column -->
+        <!-- <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let row">{{ row.date }}</td>
+      </ng-container> -->
+
+        <!-- Slot Column -->
+        <ng-container matColumnDef="slot">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Slot Time</th>
+          <td mat-cell *matCellDef="let row">{{ row.slot }}</td>
+        </ng-container>
+
+        <!-- Tests Column -->
+        <ng-container matColumnDef="tests">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Booked Tests</th>
+          <td mat-cell *matCellDef="let row; let i = index">
+            <mat-accordion>
+              <mat-expansion-panel >
+                <mat-expansion-panel-header  >
+                  <mat-panel-title >
+                    {{ tests[i].length }}
+                    <mat-icon>event_note</mat-icon></mat-panel-title
+                  >
+                </mat-expansion-panel-header>
+                <h4 *ngFor="let test of tests[i]">{{ test.test_name }}</h4>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </td></ng-container
+        >
+
+        <!-- Status Column -->
+        <!-- <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef >Status</th>
+          <td mat-cell *matCellDef="let row">{{ row.status }}</td>
+        </ng-container> -->
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsForCompletedAppointments"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsForCompletedAppointments"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="12">Data Not Found!</td>
+        </tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[ 10, 25, 100]"
+        aria-label="Select page of users"
+      ></mat-paginator>
+    </div>
+  </div>
+  <!-- Rejected Appointments Table -->
+  <h1>Rejected Appointments</h1>
+  <div class="table-container">
+    <mat-form-field appearance="standard">
+      <mat-label>Filter</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Type here to Search."
+        #input
+      />
+    </mat-form-field>
+    <div>
+      <table mat-table [dataSource]="rejectedAppointmentsDataSource" class="mat-elevation-z8 table" matSort>
+        <!-- Appointment ID Column -->
+        <ng-container matColumnDef="appointment id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.appointment_id }}</td>
+        </ng-container>
+
+        <!-- Customer ID Column -->
+        <ng-container matColumnDef="customer id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer ID</th>
+          <td mat-cell *matCellDef="let row">{{ row.user__customer_id }}</td>
+        </ng-container>
+
+        <!-- Customer Name Column -->
+        <ng-container matColumnDef="customer name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.user__user_id__username }}
+          </td>
+        </ng-container>
+
+        <!-- Date Column -->
+        <!-- <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let row">{{ row.date }}</td>
+      </ng-container> -->
+
+        <!-- Slot Column -->
+        <ng-container matColumnDef="slot">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Slot Time</th>
+          <td mat-cell *matCellDef="let row">{{ row.slot }}</td>
+        </ng-container>
+
+        <!-- Tests Column -->
+        <ng-container matColumnDef="tests">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Booked Tests</th>
+          <td mat-cell *matCellDef="let row; let i = index">
+            <mat-accordion>
+              <mat-expansion-panel >
+                <mat-expansion-panel-header  >
+                  <mat-panel-title >
+                    {{ tests[i].length }}
+                    <mat-icon>event_note</mat-icon></mat-panel-title
+                  >
+                </mat-expansion-panel-header>
+                <h4 *ngFor="let test of tests[i]">{{ test.test_name }}</h4>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </td></ng-container
+        >
+
+        <!-- Status Column -->
+        <!-- <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef >Status</th>
+          <td mat-cell *matCellDef="let row">{{ row.status }}</td>
+        </ng-container> -->
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsForRejectedAppointments"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsForRejectedAppointments"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="12">Data Not Found!</td>
+        </tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[ 10, 25, 100]"
+        aria-label="Select page of users"
+      ></mat-paginator>
+    </div>
+  </div>
+  </div>

@@ -1,5 +1,6 @@
-  import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -8,6 +9,7 @@ import { MatAccordion } from '@angular/material/expansion';
 import { AppointmentsService } from 'src/app/services/appointments-service/appointments.service';
 import { CloseDialogComponent } from '../../close-dialog/close-dialog.component';
 import { Router } from '@angular/router';
+import { SubjectServiceService } from 'src/app/services/subject-service/subject-service.service';
 
 export interface AppointmentData {
   appointment_id: string;
@@ -27,6 +29,14 @@ export interface AppointmentData {
   status: string;
 }
 
+export interface AppointmentsStatusData{
+  appointment_id: string;
+  customer_id: string;
+  customer_name: string;
+  slot: string;
+  tests: string;
+}
+
 @Component({
   selector: 'app-display-appointments',
   templateUrl: './display-appointments.component.html',
@@ -34,62 +44,188 @@ export interface AppointmentData {
 })
 export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   appointments: any;
-  searchedAppointments: any;
+  pendingAppointments: any=[];
+  approvedAppointments: any=[];
+  rejectedAppointments: any=[];
+  completedAppointments: any=[];
   tests: any;
-  searchedTests: any;
   dataSource: MatTableDataSource<AppointmentData>;
-  searchText !: string
-
+  pendingAppointmentsDataSource: MatTableDataSource<AppointmentsStatusData>;
+  approvedAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
+  rejectedAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
+  completedAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
+  login_details: any;
+  user_id: any;
+  user_type!: string;
+  user_username!: string;
+  isAdmin: boolean = false;
+  role!: string;
+  isDoctor: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatAccordion) accordion!: MatAccordion;
 
-  constructor(private appointments_service: AppointmentsService, public dialog: MatDialog, private router: Router) {
+  constructor(private appointments_service: AppointmentsService , public dialog: MatDialog , private router :Router, private subjectService : SubjectServiceService) {
     this.dataSource = new MatTableDataSource(this.appointments);
+    this.pendingAppointmentsDataSource = new MatTableDataSource(this.pendingAppointments);
+    this.approvedAppointmentsDataSource = new MatTableDataSource(this.approvedAppointments);
+    this.rejectedAppointmentsDataSource = new MatTableDataSource(this.rejectedAppointments);
+    this.completedAppointmentsDataSource = new MatTableDataSource(this.completedAppointments);
   }
 
-  displayedColumns: string[] = [
-    'appointment id',
-    'customer id',
-    'customer name',
-    // 'date',
-    'slot',
-    'doctor id',
-    'doctor',
-    'nurse id',
-    'nurse',
-    'lab technician id',
-    'lab technician',
-    'sample collector id',
-    'sample collector',
-    'status',
-    'tests',
-    'delete',
-    'update',
-  ];
+  displayedColumns!: string[];
+  displayedColumnsForPendingAppointments!: string[];
+  displayedColumnsForApprovedAppointments!: string[];
+  displayedColumnsForCompletedAppointments!: string[];
+  displayedColumnsForRejectedAppointments!: string[];
 
   getAppointments() {
-    this.appointments_service.getAppointments().subscribe({
+    this.login_details = window.localStorage.getItem('login_details');
+    this.login_details = JSON.parse(this.login_details);
+    // this.subjectService.userTypeIdSubject.subscribe(id =>{
+    //     this.user_id= id
+    // })
+    // this.subjectService.userTypeSubject.subscribe(user_type =>{
+    //   this.user_type= user_type
+    // })
+    console.log(this.login_details)
+    this.user_id = this.login_details.user_type_id;
+    this.user_type = this.login_details.user_type;
+    this.user_username = this.login_details.username;
+    // console.log(this.user_id,this.user_type)
+    this.appointments_service.getAppointments(this.user_username).subscribe({
       next: (data: any) => {
+        console.log(this.user_id)
         this.appointments = data.appointments;
         this.tests = data.related_tests;
-        this.tests = JSON.parse(this.tests);
+        // if (this.tests != "") {
+          this.tests = JSON.parse(this.tests);
+        // }
         this.appointments = JSON.parse(this.appointments);
         this.dataSource.data = this.appointments;
+        this.role=data.role
+        console.log(this.appointments, this.tests,this.role)
+        this.setAppointmentsAccordingToUser();
       },
       error: (err) => {
         console.log(err);
       },
     });
   }
+
+  setAppointmentsAccordingToUser() {
+    if (this.role === "Admin") {
+      this.displayedColumns = [
+      // this.displayedColumnsForAdmin = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'doctor id',
+        'doctor',
+        'nurse id',
+        'nurse',
+        'lab technician id',
+        'lab technician',
+        'sample collector id',
+        'sample collector',
+        'status',
+        'tests',
+        'delete',
+        'update',
+      ];
+      this.isAdmin = true;
+      // this.displayedColumns = this.displayedColumnsForAdmin;
+    }
+    else if (this.role === "Doctor") {
+      this.appointments.map(
+        (appointment: any) => {
+          if (appointment.status === "pending") {
+            this.pendingAppointments.push(appointment)
+          }
+          else if (appointment.status === "approved") {
+            this.approvedAppointments.push(appointment)
+          }
+          else if (appointment.status === "rejected") {
+            this.rejectedAppointments.push(appointment)
+          }
+          else if (appointment.status === "completed") {
+            this.completedAppointments.push(appointment)
+          }
+          this.pendingAppointmentsDataSource.data = this.pendingAppointments;
+          this.approvedAppointmentsDataSource.data = this.approvedAppointments;
+          this.rejectedAppointmentsDataSource.data = this.rejectedAppointments;
+          this.completedAppointmentsDataSource.data = this.completedAppointments;
+        }
+      )
+      console.log(this.pendingAppointments, this.approvedAppointments, this.rejectedAppointments, this.completedAppointments)
+      this.displayedColumnsForPendingAppointments = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'tests',
+        'approve',
+        'reject'
+      ];
+      this.displayedColumnsForApprovedAppointments = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'tests',
+        'completed',
+      ];
+      this.displayedColumnsForCompletedAppointments = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'tests',
+      ];
+      this.displayedColumnsForRejectedAppointments = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'tests',
+      ];
+      this.isDoctor = true;
+      // this.displayedColumns = this.DisplayedColumnsForStaff;
+    }
+  }
+
   ngOnInit(): void {
     this.getAppointments()
   }
 
+
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  getDisplayedColumns() {
+    this.setAppointmentsAccordingToUser();
+  }
+
+  approveAppointment(id: any) {
+    this.appointments_service.changeAppointmentStatus(id, "approved");
+  }
+
+  rejectAppointment(id: any) {
+    this.appointments_service.changeAppointmentStatus(id, "rejected");
+  }
+
+  completeAppointment(id: any) {
+    this.appointments_service.changeAppointmentStatus(id, "completed");
   }
 
   applyFilter(event: Event) {
@@ -115,32 +251,17 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
       }
     })
   }
-
-  updateAppointment(id: any) {
-    this.router.navigate(['admin/edit-appointment', id])
+  submitDelete(appId: any) {
+    console.log("delete");
+    this.appointments_service.deleteAppointment(appId).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.getAppointments()
+      }
+    })
   }
 
-
-  // search bar
-
-  onSearchTextEntered(searchValue: string) {
-    if (searchValue.length >= 3) {
-      this.searchText = searchValue
-      this.appointments_service.getSearchedAppointments(this.searchText).subscribe({
-        next: (data: any) => {
-          this.searchedAppointments = data.appointments;
-          this.searchedTests = data.related_tests;
-          this.searchedTests = JSON.parse(this.searchedTests);
-          this.searchedAppointments = JSON.parse(this.searchedAppointments);
-          this.dataSource.data = this.searchedAppointments;
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-    }
-    else if (searchValue.length ==0){
-      this.dataSource.data = this.appointments;
-    }
+  updateAppointment(id : any){
+    this.router.navigate(['admin/edit-appointment' , id])
   }
 }

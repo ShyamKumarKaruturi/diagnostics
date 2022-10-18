@@ -9,11 +9,9 @@ import {BehaviorSubject} from 'rxjs'
 export class SubjectServiceService {
 
   loggedIn : boolean = false
-  isCustomer : boolean = false
-  
   public usernameSubject = new BehaviorSubject("");
   public isLoggedInSubject =  new BehaviorSubject(false)
-  public userTypeSubject = new BehaviorSubject("")
+  public userTypeSubject = new BehaviorSubject("customer")
   public userTypeIdSubject = new BehaviorSubject("")
 
   constructor(
@@ -27,38 +25,31 @@ export class SubjectServiceService {
         this.userTypeSubject.next(data['user_type'])
         this.userTypeIdSubject.next(data['user_type_id'])
         this.loggedIn = true
-        if (data['user_type']){
-          this.isCustomer  = true
-        }
-        localStorage.setItem("customerId", data['user_type_id'])
       },
       error: () => {
         this.usernameSubject.next("")
         this.isLoggedInSubject.next(false)
-        this.userTypeSubject.next("")
+        this.userTypeSubject.next("customer")
         this.userTypeIdSubject.next("")
         this.loggedIn = false
-        this.isCustomer = false
       }
     })
    }
+
   sendLoginDetails(data : any){
     this.usernameSubject.next(data['username'])
     this.isLoggedInSubject.next(true)
     this.userTypeSubject.next(data['user_type'])
     this.userTypeIdSubject.next(data['user_type_id'])
     this.loggedIn = true
-    if (data['user_type']) {
-      this.isCustomer = true
-    }
+    window.localStorage.setItem('login_details', JSON.stringify(data))
   }
 
   logoutService(){
     this.usernameSubject.next("")
     this.isLoggedInSubject.next(false)
-    this.userTypeSubject.next("")
+    this.userTypeSubject.next("customer")
     this.userTypeIdSubject.next("")
     this.loggedIn = false
-    this.isCustomer = false
   }
 }

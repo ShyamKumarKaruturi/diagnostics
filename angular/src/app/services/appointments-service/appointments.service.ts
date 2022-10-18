@@ -8,26 +8,22 @@ const baseUrl = 'http://127.0.0.1:8000/';
   providedIn: 'root',
 })
 export class AppointmentsService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Appointments Services.
 
-  getAppointments(): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`);
-  }
-  getSearchedAppointments(text:any): Observable<Object> {
-    let queryParams = { "text": text };
-    return this.http.get<any>(`${baseUrl}${'appointments/search-appointment/'}`, { params: queryParams });
+  getAppointments(username: any): Observable<Object> {
+    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`, { params: { 'username': username } });
   }
   setAppointment(data: any) {
     return this.http.post<any>(`${baseUrl}${'appointments/book-appointment/'}`, data);
   }
 
   getAppointment(id: any): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}appointments/appointment/${id}/ `);
+    return this.http.get<any>(`${baseUrl}appointments/appointment/${id}/`);
   }
 
-  updateAppointment(id :any , data: any) {
+  updateAppointment(id: any, data: any) {
     return this.http.put<any>(`${baseUrl}appointments/appointment/${id}/`, data);
   }
 
@@ -36,4 +32,9 @@ export class AppointmentsService {
       `${baseUrl}appointments/appointment/${id}/`
     );
   }
+
+  changeAppointmentStatus(id: any, status: string) {
+    return this.http.post<any>(`${baseUrl}${'appointments/update-appointment-status/'}`, { params: { 'id': id, 'status': status } });
+  }
+
 }
