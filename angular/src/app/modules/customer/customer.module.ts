@@ -16,11 +16,16 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { CustomerBookingComponent } from './components/customer-booking/customer-booking.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { MatIconModule } from '@angular/material/icon';
+import { AppointmentsComponent } from './components/appointments/appointments.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
-    CustomerBookingComponent
+    CustomerBookingComponent,
+    FooterComponent,
+    AppointmentsComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +40,8 @@ import { CustomerBookingComponent } from './components/customer-booking/customer
     MatCardModule,
     MatButtonModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatIconModule
   ]
 })
 export class CustomerModule { }

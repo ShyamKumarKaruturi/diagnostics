@@ -18,10 +18,8 @@ class Lab(models.Model):
     )
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     lab_id = models.CharField(max_length=10, primary_key=True)
-    lab_number = models.IntegerField()
-    lab_type = models.CharField(max_length=100)
     lab_name = models.CharField(max_length=100)
-    lab_status = models.CharField(choices=STATUS, default='available', max_length=100)
+    # lab_status = models.CharField(choices=STATUS, default='available', max_length=100)
 
     def __str__(self):
         return self.lab_id
@@ -29,9 +27,8 @@ class Lab(models.Model):
 
 class Test(models.Model):
     test_id = models.CharField(max_length=10, primary_key=True)
-    test_type = models.CharField(max_length=100)
     test_name = models.CharField(max_length=100)
-    test_description = models.TextField(max_length=5000)
+    test_description = models.TextField(max_length=5000 , null=True)
     lab = models.ForeignKey(Lab, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -86,11 +83,10 @@ class Bill(models.Model):
     total = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class Report(models.Model):
     appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
     description = models.TextField(max_length=200, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
-    report_type = models.CharField(max_length=200, null=True, blank=True)

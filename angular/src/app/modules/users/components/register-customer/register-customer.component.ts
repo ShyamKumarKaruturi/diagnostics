@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpServiceService } from '../../http-service.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpService } from 'src/app/services/http-service/http.service';
 
 @Component({
   selector: 'app-register-customer',
@@ -13,7 +14,16 @@ export class RegisterCustomerComponent implements OnInit {
   formNotValid : boolean = false
   formError ?: string =""
   errorMessage : string = ""
-  constructor(private http: HttpServiceService, private router: Router) { }
+ 
+
+
+  constructor(private http: HttpServiceService, private router: Router) {
+   
+
+    
+
+   }
+  
 
   customerRegisterForm: FormGroup = new FormGroup({
     username : new FormControl("", Validators.required),
@@ -22,12 +32,14 @@ export class RegisterCustomerComponent implements OnInit {
     email: new FormControl("", [Validators.required, Validators.email]),
     mobile_number: new FormControl("", [Validators.maxLength(12), Validators.required]),
     age: new FormControl("", Validators.required),
-    address: new FormControl(""),
-    pincode: new FormControl("", Validators.maxLength(6)),
-    password: new FormControl("", Validators.minLength(8)),
+    address: new FormControl("", Validators.required),
+    pincode: new FormControl("", [Validators.maxLength(6), Validators.required]),
+    password: new FormControl("", [Validators.minLength(8), Validators.required]),
     // password1: new FormControl(" ", Validators.minLength(8))
   })
+
   ngOnInit(): void {
+    
 
   }
   submitRegister() {

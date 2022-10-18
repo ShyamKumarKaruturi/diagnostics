@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class User(AbstractUser):
-    mobile_number = models.CharField(max_length=12, default=0)
+    mobile_number = models.CharField(max_length=10, default=0)
     age = models.IntegerField(null=True, blank=True)
     address = models.TextField(max_length=200)
     pincode = models.CharField(max_length=8, null=True,blank=True)
@@ -29,10 +29,7 @@ class Staff(models.Model):
         ('Sample Collector', 'Sample Collector'),
         ('Receptionist', 'Receptionist'),
     )
-    STATUS = (
-        ('occupied' , 'occupied'),
-        ('available', 'available'),
-    )
+
     staff_id = models.CharField(max_length = 10, primary_key = True)
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     designation = models.CharField(max_length=100,choices = DESIGNATION)
@@ -40,7 +37,6 @@ class Staff(models.Model):
     salary = models.IntegerField()
     years_of_experience = models.IntegerField()
     branch = models.ForeignKey('appointment.Branch' , on_delete = models.CASCADE)
-    status = models.CharField(choices = STATUS , default = 'available',max_length=100 )
 
     def __str__(self):
         return self.staff_id

@@ -12,23 +12,27 @@ export class TestsService {
 
   // Test Services
 
+  addTest(data:any){
+    return this.http.post<any>(`${baseUrl}${'appointments/tests/'}`,data);
+  }
+
   getTests(): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/test/'}`);
+    return this.http.get<any>(`${baseUrl}${'appointments/tests/'}`);
   }
 
   getTest(id: any): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/test/'}`, id);
+    return this.http.get<any>(`${baseUrl}${'appointments/tests/'}`, id);
   }
 
   setTest(data: any) {
-    return this.http.put<any>(`${baseUrl}${'appointments/test/'}`, data);
+    return this.http.put<any>(`${baseUrl}${'appointments/tests/'}`, data);
   }
 
   updateTest(data: any) {
-    return this.http.put<any>(`${baseUrl}${'appointments/test/'}`, data);
+    return this.http.put<any>(`${baseUrl}${'appointments/tests/'}`, data);
   }
 
   deleteTest(data: any) {
-    return this.http.delete<any>(`${baseUrl}${'appointments/test/'}`, data);
+    return this.http.delete<any>(`${baseUrl}${'appointments/tests/'}`, data);
   }
 }

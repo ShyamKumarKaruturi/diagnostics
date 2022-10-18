@@ -6,9 +6,6 @@ import { RegisterCustomerComponent } from './components/register-customer/regist
 import { RegisterEmployeeComponent } from './components/register-employee/register-employee.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LoginComponent } from './components/login/login.component';
-import { LogoutComponent } from './components/logout/logout.component';
-
 // material
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
@@ -39,21 +36,25 @@ import { NewLabComponent } from './components/labs/new-lab/new-lab.component';
 import { NewReportComponent } from './components/reports/new-report/new-report.component';
 import { DisplayReportComponent } from './components/reports/display-report/display-report.component';
 import { DisplayReportsComponent } from './components/reports/display-reports/display-reports.component';
-import { DisplayReviewComponent } from './components/reviews/display-review/display-review.component';
-import { DisplayReviewsComponent } from './components/reviews/display-reviews/display-reviews.component';
-import { NewReviewComponent } from './components/reviews/new-review/new-review.component';
 import { NewTestComponent } from './components/tests/new-test/new-test.component';
 import { DisplayTestsComponent } from './components/tests/display-tests/display-tests.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { CloseDialogComponent } from './components/close-dialog/close-dialog.component';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
-
-
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { WelcomeAdminComponent } from './components/welcome-admin/welcome-admin.component';
+import { DisplayCustomersComponent } from './components/display-customers/display-customers.component';
+import { DisplayEmployeesComponent } from './components/display-employees/display-employees.component';
+import { DisplayCustomerComponent } from './components/display-customer/display-customer.component';
+import { SearchComponent } from './components/search/search.component';
 @NgModule({
   declarations: [
     RegisterCustomerComponent,
     RegisterEmployeeComponent,
     DashboardComponent,
-    LoginComponent,
-    LogoutComponent,
     BookAppointmentComponent,
     DisplayAppointmentComponent,
     DisplayAppointmentsComponent,
@@ -68,12 +69,18 @@ import { DisplayTestsComponent } from './components/tests/display-tests/display-
     NewReportComponent,
     DisplayReportComponent,
     DisplayReportsComponent,
-    DisplayReviewComponent,
-    DisplayReviewsComponent,
-    NewReviewComponent,
+   
     NewTestComponent,
     DisplayTestsComponent,
+    CloseDialogComponent,
+    SidenavComponent,
+    WelcomeAdminComponent,
+    DisplayCustomersComponent,
+    DisplayEmployeesComponent,
+    DisplayCustomerComponent,
+    SearchComponent,
   ],
+  entryComponents:[CloseDialogComponent],
   imports: [
     CommonModule,
     UsersRoutingModule,
@@ -93,6 +100,10 @@ import { DisplayTestsComponent } from './components/tests/display-tests/display-
     MatSortModule,
     MatTableModule,
     MatExpansionModule,
+    MatToolbarModule,
+    MatDialogModule,
+    MatSidenavModule,
+    MatTabsModule
   ],
   bootstrap: [
   ]

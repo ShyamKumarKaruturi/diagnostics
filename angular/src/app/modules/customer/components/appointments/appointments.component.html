@@ -1,0 +1,13 @@
+<div class="card" *ngFor="let appointment of appointments">
+  <mat-card class="detail-container">
+    <div class="details">
+      <mat-card-title>Appointment ID: </mat-card-title>
+      <mat-card-title>{{ appointment.appointment_id }}</mat-card-title>
+    </div>
+    <div class="details">
+      <mat-card-title>Status ID: </mat-card-title>
+      <mat-card-title>{{ appointment.status }}</mat-card-title>
+    </div>
+  </mat-card>
+  <hr />
+</div>

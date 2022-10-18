@@ -11,7 +11,7 @@
       <!-- select -->
       <div class="col-md-6">
         
-        <mat-form-field class="full-width" appearance="fill">
+        <mat-form-field class="full-width" appearance="outline">
           <mat-label>Slot</mat-label>
           <mat-select formControlName="slot" required>
             <mat-option>--</mat-option>
@@ -23,7 +23,7 @@
       </div>
       <small
         *ngIf="
-          bookAppointmentForm.get('slot')?.touched ||
+          bookAppointmentForm.get('slot')?.touched &&
           bookAppointmentForm.get('slot')?.invalid
         "
         >please select Slot</small
@@ -31,7 +31,7 @@
       <!-- select end  -->
       <div class="col-md-6">
         
-        <mat-form-field class="full-width" appearance="fill">
+        <mat-form-field class="full-width" appearance="outline">
           <mat-label>Branch</mat-label>
           <mat-select formControlName="branch" required>
             <mat-option> </mat-option>
@@ -46,7 +46,7 @@
       </div>
       <small
         *ngIf="
-          bookAppointmentForm.get('branch')?.touched ||
+          bookAppointmentForm.get('branch')?.touched &&
           bookAppointmentForm.get('branch')?.invalid
         "
         >please select branch</small

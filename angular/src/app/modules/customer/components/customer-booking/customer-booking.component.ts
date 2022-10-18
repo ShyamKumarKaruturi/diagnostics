@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpServiceService } from 'src/app/modules/users/http-service.service';
+import { SubjectServiceService } from 'src/app/services/subject-service/subject-service.service';
 import { CustomerServiceService } from '../../customer-service.service';
 @Component({
   selector: 'app-customer-booking',
@@ -12,15 +13,13 @@ export class CustomerBookingComponent implements OnInit {
   slots: string[] = ['10 AM', "1 PM", '4 PM']
   branches: any
   errorMessage : boolean = false
-  constructor(private http: CustomerServiceService, private router: Router, private httpUser: HttpServiceService) { }
+  data : any
+  constructor(private http: CustomerServiceService, private router: Router, private httpUser: HttpServiceService , 
+    private subjectService : SubjectServiceService) { }
   bookAppointmentForm: FormGroup = new FormGroup({
-    
     branch: new FormControl("", Validators.required),
     slot: new FormControl("", Validators.required),
-
   })
-  
-
   ngOnInit(): void {
     this.httpUser.getBranches().subscribe(data => {
       this.branches = data
@@ -29,8 +28,13 @@ export class CustomerBookingComponent implements OnInit {
   }
   bookAppointment(){
     if(this.bookAppointmentForm.valid){
-      this.http.bookAppointment({ 'form': this.bookAppointmentForm.value, 'username': this.httpUser.getData('username') }).subscribe(data => {
+      this.data = this.bookAppointmentForm.value
+      this.subjectService.userTypeIdSubject.subscribe(customer_id =>{
+        this.data['user']= customer_id
+      })
+      this.http.bookAppointment({ 'form': this.data, 'username': "customer" }).subscribe(data => {
         console.log(data);
+        this.router.navigate([''])
       })
     }
     else {

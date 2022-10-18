@@ -8,27 +8,28 @@ const baseUrl = 'http://127.0.0.1:8000/';
   providedIn: 'root',
 })
 export class BranchesService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  // Branch Services
+  // Branches
+  addBranch(data: any) {
+    return this.http.post<any>(`${baseUrl}appointments/branches/`, data);
+  }
 
   getBranches(): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/branch/'}`);
+    return this.http.get<any>(`${baseUrl}appointments/branches/`);
   }
 
+  // branch
   getBranch(id: any): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/branch/'}`, id);
+    return this.http.get<any>(`${baseUrl}appointments/branch/${id}`);
   }
 
-  setBranch(data: any) {
-    return this.http.put<any>(`${baseUrl}${'appointments/branch/'}`, data);
+
+  updateBranch(id: any,data: any) {
+    return this.http.put<any>(`${baseUrl}appointments/branch/${id}/`, data);
   }
 
-  updateBranch(data: any) {
-    return this.http.put<any>(`${baseUrl}${'appointments/branch/'}`, data);
-  }
-
-  deleteBranch(data: any) {
-    return this.http.delete<any>(`${baseUrl}${'appointments/branch/'}`, data);
+  deleteBranch(id: any) {
+    return this.http.delete<any>(`${baseUrl}appointments/branch/${id}`);
   }
 }

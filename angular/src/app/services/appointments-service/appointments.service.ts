@@ -15,23 +15,25 @@ export class AppointmentsService {
   getAppointments(): Observable<Object> {
     return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`);
   }
-
-  getAppointment(id: any): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`, id);
+  getSearchedAppointments(text:any): Observable<Object> {
+    let queryParams = { "text": text };
+    return this.http.get<any>(`${baseUrl}${'appointments/search-appointment/'}`, { params: queryParams });
   }
-
   setAppointment(data: any) {
     return this.http.post<any>(`${baseUrl}${'appointments/book-appointment/'}`, data);
   }
 
-  updateAppointment(data: any) {
-    return this.http.put<any>(`${baseUrl}${'appointments/appointment/'}`, data);
+  getAppointment(id: any): Observable<Object> {
+    return this.http.get<any>(`${baseUrl}appointments/appointment/${id}/ `);
   }
 
-  deleteAppointment(data: any) {
+  updateAppointment(id :any , data: any) {
+    return this.http.put<any>(`${baseUrl}appointments/appointment/${id}/`, data);
+  }
+
+  deleteAppointment(id: any) {
     return this.http.delete<any>(
-      `${baseUrl}${'appointments/appointment/'}`,
-      data
+      `${baseUrl}appointments/appointment/${id}/`
     );
   }
 }

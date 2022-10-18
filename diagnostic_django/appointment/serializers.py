@@ -17,7 +17,7 @@ class BranchSerializer(serializers.ModelSerializer):
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Test
-        fields = ['test_id', 'test_type', 'test_name', 'test_description']
+        fields = ['test_id', 'test_name', 'test_description' , 'lab']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -29,7 +29,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Appointment
-        fields = ["appointment_id",'user','branch','slot','doctor_id','nurse_id','lab_technician','sample_collector','status','date']
+        fields = ["appointment_id",'user','branch','slot','doctor_id','nurse_id','lab_technician','sample_collector','status','date','tests']
 
 
 

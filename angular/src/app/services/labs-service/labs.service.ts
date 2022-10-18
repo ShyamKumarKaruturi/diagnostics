@@ -10,24 +10,24 @@ const baseUrl = 'http://127.0.0.1:8000/';
 export class LabsService {
   constructor(private http: HttpClient) {}
 
-  // Lab Services
+  // Labs
+  createLab(data:any){
+    return this.http.post<any>(`${baseUrl}${'appointments/labs/'}`, data);
+  }
   getLabs(): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/lab/'}`);
+    return this.http.get<any>(`${baseUrl}${'appointments/labs/'}`);
   }
 
+  // lab 
   getLab(id: any): Observable<Object> {
-    return this.http.get<any>(`${baseUrl}${'appointments/lab/'}`, id);
+    return this.http.get<any>(`${baseUrl}appointments/lab/${id}`);
   }
 
-  setLab(data: any) {
-    return this.http.put<any>(`${baseUrl}${'appointments/lab/'}`, data);
+  updateLab(id:any,data: any) {
+    return this.http.put<any>(`${baseUrl}appointments/lab/${id}}`, data);
   }
 
-  updateLab(data: any) {
-    return this.http.put<any>(`${baseUrl}${'appointments/lab/'}`, data);
-  }
-
-  deleteLab(data: any) {
-    return this.http.delete<any>(`${baseUrl}${'appointments/lab/'}`, data);
+  deleteLab(id: any) {
+    return this.http.delete<any>(`${baseUrl}appointments/lab/${id}`);
   }
 }
