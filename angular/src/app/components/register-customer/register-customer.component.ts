@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpServiceService } from 'src/app/modules/users/http-service.service';
+import { HttpService } from 'src/app/services/http-service/http.service';
 
 @Component({
   selector: 'app-register-customer',
@@ -14,7 +15,36 @@ export class RegisterCustomerComponent implements OnInit {
   formError?: string = ""
   errorMessage: string = ""
   invalidPassword: boolean = false
-  constructor(private http: HttpServiceService, private router: Router) { }
+  // update
+  customerId !: string
+  customerDetails: any
+  UserDetails: any
+  appointments: any
+  constructor(private http: HttpServiceService, private router: Router, private actRouter: ActivatedRoute, private customerHttp: HttpService) {
+    this.actRouter.params.subscribe(data => {
+      this.customerId = data['customer_id']
+      console.log(this.customerId);
+    })
+    if (this.customerId) {
+      this.customerHttp.getCustomer(this.customerId).subscribe({
+        next: (data: any) => {
+          this.customerRegisterForm.get('username')?.setValue(data["user_details"]['username'])
+          this.customerRegisterForm.get('first_name')?.setValue(data["user_details"]['first_name'])
+          this.customerRegisterForm.get('last_name')?.setValue(data["user_details"]['last_name'])
+          this.customerRegisterForm.get('email')?.setValue(data["user_details"]['email'])
+          this.customerRegisterForm.get('mobile_number')?.setValue(data["user_details"]['mobile_number'])
+          this.customerRegisterForm.get('age')?.setValue(data["user_details"]['age'])
+          this.customerRegisterForm.get('address')?.setValue(data["user_details"]['address'])
+          this.customerRegisterForm.get('pincode')?.setValue(data["user_details"]['pincode'])
+          this.customerRegisterForm.get('password')?.setValue(data["user_details"]['password'])
+          this.customerRegisterForm.get('passwordAgain')?.setValue(data["user_details"]['passwordAgain'])
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      })
+    }
+   }
 
   customerRegisterForm: FormGroup = new FormGroup({
     username: new FormControl("", Validators.required),
@@ -48,18 +78,29 @@ export class RegisterCustomerComponent implements OnInit {
     else{
       this.invalidPassword = false
       if (this.customerRegisterForm.valid) {
-        this.http.registerCustomer(this.customerRegisterForm.value).subscribe(data => {
-          this.errorMessage = data.message
-          if (this.errorMessage == "registered") {
-            this.router.navigate(['/login'])
-          }
-        })
+        if(this.customerId){
+          this.customerHttp.updateCustomer(this.customerId, this.customerRegisterForm.value).subscribe({
+            next:(data:any)=>{
+                this.errorMessage = data.message
+                if (this.errorMessage == "updated") {
+                  this.router.navigate([`/admin/display-customer/${this.customerId}`])
+              }
+            }
+          })
+        }
+        else{
+          this.http.registerCustomer(this.customerRegisterForm.value).subscribe(data => {
+            this.errorMessage = data.message
+            if (this.errorMessage == "registered") {
+              this.router.navigate(['/login'])
+            }
+          })
+        }
       }
       else {
         console.log('fill properly ');
         this.formNotValid = true
         console.log(this.customerRegisterForm.valid);
-
       }
     }
 

@@ -2,6 +2,7 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from appointment import serializers
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -49,18 +50,20 @@ class DetailCustomer(APIView):
         else:
             return JsonResponse(data={'success': 'customer is not deleted successfully.'}, safe=False)
         return JsonResponse(
-            data={'Failure': 'Appointment Doesn\'t exists . So, Appointment Data cound not be deleted successfully.'},
+            data={'Failure': 'Customer Doesn\'t exists . So, Appointment Data cound not be deleted successfully.'},
             safe=False)
 
     def put(self,request,customer_id):
-        data = request.data.get('form')
-        customer = Customer.objects.get(branch_id=id)
-        serializer = CustomerSerializer(customer, data=data)
+        customer_data = JSONParser().parse(request)
+        customer = Customer.objects.filter(customer_id=customer_id).first()
+        user = User.objects.filter(id=customer.user_id.id).first()
+        serializer = UserSerializer(user,data=customer_data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse({"message": "Customer Updated", "action_status": "success"},
-                                status=status.HTTP_201_CREATED, safe=False)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST, safe=False)
+            return Response({'data': serializer.data, 'message': "updated"}, status=200)
+        else:
+            error_list = [serializer.errors[error][0] for error in serializer.errors]
+            return Response({"message": error_list}, status=200)
 
 
 class FilterCustomer(APIView):

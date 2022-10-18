@@ -37,6 +37,10 @@ export class HttpService {
   getCustomer(customer_id:string){
     return this.http.get(`http://127.0.0.1:8000/users/customer/${customer_id}`)
   }
+  updateCustomer(customer_id:string , data :any){
+    return this.http.put(`${baseUrl}users/customer/${customer_id}/`,data)
+  }
+
   getBranches() {
     return this.http.get('http://127.0.0.1:8000/users/branch/');
   }

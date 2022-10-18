@@ -22,7 +22,7 @@ export class HttpServiceService {
   getBranches() {
     return this.http.get('http://127.0.0.1:8000/users/branch/')
   }
-
+  
   handleError(err: any): any {
     // console.log(err);  
     //   let errorMessage =""

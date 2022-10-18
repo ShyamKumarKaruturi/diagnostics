@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'logout', component: LogoutComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterCustomerComponent},
-
+  { path: 'update-customer/:customer_id', component: RegisterCustomerComponent},
   {
     path: 'admin',
     // canActivate: [AdminGaurdGuard],

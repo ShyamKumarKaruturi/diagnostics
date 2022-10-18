@@ -19,6 +19,7 @@ import { WelcomeAdminComponent } from './components/welcome-admin/welcome-admin.
 const routes: Routes = [
   {path:"",component:DashboardComponent,children:[
     {path:'register-customer' , component : RegisterCustomerComponent },
+    {path:'update-customer/:customer_id' , component : RegisterCustomerComponent },
     { path: 'register-employee', component: RegisterEmployeeComponent },
     { path: 'book-appointment', component: BookAppointmentComponent },
     { path: 'edit-appointment/:id', component: BookAppointmentComponent },

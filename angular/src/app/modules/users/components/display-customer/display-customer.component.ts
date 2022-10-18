@@ -60,4 +60,7 @@ export class DisplayCustomerComponent implements OnInit {
       }
     })
   }
+  updateCustomer(customer_id: string) {
+    this.router.navigate(['update-customer/', customer_id])
+  }
 }
