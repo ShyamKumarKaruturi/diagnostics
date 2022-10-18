@@ -90,8 +90,7 @@ class AppointmentAPI(APIView):
                 elif loggedin_user.user_type == "staff":
                     staff = Staff.objects.get(user_id=loggedin_user.id)
                     role=staff.designation
-                    appointments = AppointmentsDetails.get_staff_related_appointments_data(staff.staff_id, staff.designation)
-                    appointments_tests_data = ""
+                    appointments, appointments_tests_data = AppointmentsDetails.get_staff_related_appointments_data(staff.staff_id, staff.designation)
                 else:
                     role="Customer"
             else:

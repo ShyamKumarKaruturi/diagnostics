@@ -8,13 +8,12 @@ const baseUrl = 'http://127.0.0.1:8000/';
   providedIn: 'root',
 })
 export class AppointmentsService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Appointments Services.
 
   getAppointments(username: any): Observable<Object> {
-    console.log(username);
-    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`, { params: { 'username':username } });
+    return this.http.get<any>(`${baseUrl}${'appointments/book-appointment/'}`, { params: { 'username': username } });
   }
   setAppointment(data: any) {
     return this.http.post<any>(`${baseUrl}${'appointments/book-appointment/'}`, data);
@@ -24,7 +23,7 @@ export class AppointmentsService {
     return this.http.get<any>(`${baseUrl}appointments/appointment/${id}/`);
   }
 
-  updateAppointment(id :any , data: any) {
+  updateAppointment(id: any, data: any) {
     return this.http.put<any>(`${baseUrl}appointments/appointment/${id}/`, data);
   }
 
@@ -33,4 +32,9 @@ export class AppointmentsService {
       `${baseUrl}appointments/appointment/${id}/`
     );
   }
+
+  changeAppointmentStatus(id: any, status: string) {
+    return this.http.post<any>(`${baseUrl}${'appointments/update-appointment-status/'}`, { params: { 'id': id, 'status': status } });
+  }
+
 }

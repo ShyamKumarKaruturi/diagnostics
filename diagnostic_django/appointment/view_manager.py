@@ -58,8 +58,12 @@ class AppointmentManager(APIView):
 
 class AppointmentsDetails:
 
-    def get_complete_appointments_data():
+    def get_complete_appointments_data(self):
         appointments = Appointment.objects.all()
+        appointments_tests_data = AppointmentsDetails.get_appointment_related_tests(appointments)
+        return (appointments, appointments_tests_data)
+
+    def get_appointment_related_tests(appointments):
         appointments_tests=[]
         for appointment in appointments:
             each_appointment_tests = list(appointment.tests.all().values(
@@ -67,16 +71,8 @@ class AppointmentsDetails:
             ))
             appointments_tests.append(each_appointment_tests)
         appointments_tests_data = json.dumps(appointments_tests)
-        appointments = list(appointments.values(
-            'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot',
-            'doctor_id__staff_id', 'doctor_id__user_id__username',
-            'nurse_id__staff_id', 'nurse_id__user_id__username', 'lab_technician__staff_id',
-            'lab_technician__user_id__username',
-            'sample_collector__staff_id', 'sample_collector__user_id__username', 'status',
-        ))
-        appointments = json.dumps(appointments)
-        return (appointments, appointments_tests_data)
-    
+        return appointments_tests_data
+
     def get_staff_related_appointments_data(staff_id: str, designation: str):
         query = Q()
         if designation == "Doctor":
@@ -88,8 +84,19 @@ class AppointmentsDetails:
         elif designation == "Sample Collector":
             query &= Q(sample_collector_id=staff_id)
         appointments = Appointment.objects.filter(query)
+        appointments_tests_data = AppointmentsDetails.get_appointment_related_tests(appointments)
         appointments = list(appointments.values(
             'appointment_id', 'user__customer_id', 'user__user_id__username', 'slot', 'status',
         ))
         appointments = json.dumps(appointments)
-        return appointments
+        return appointments,appointments_tests_data
+
+@api_view(['POST'])
+def change_appointments_status(request):
+    appointment_id = request.POST.get('id')
+    status = request.POST.get('status')
+    appointment = Appointment.objects.get(appointment_id=appointment_id)
+    appointment.status=status
+    appointment.save()
+    return Response({'message': 'Appointment Status Successfully Updated'},
+                    status=200)

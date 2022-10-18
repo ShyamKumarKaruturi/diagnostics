@@ -50,7 +50,7 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   completedAppointments: any=[];
   tests: any;
   dataSource: MatTableDataSource<AppointmentData>;
-  pendingAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
+  pendingAppointmentsDataSource: MatTableDataSource<AppointmentsStatusData>;
   approvedAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
   rejectedAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
   completedAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
@@ -68,9 +68,17 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
 
   constructor(private appointments_service: AppointmentsService , public dialog: MatDialog , private router :Router, private subjectService : SubjectServiceService) {
     this.dataSource = new MatTableDataSource(this.appointments);
+    this.pendingAppointmentsDataSource = new MatTableDataSource(this.pendingAppointments);
+    this.approvedAppointmentsDataSource = new MatTableDataSource(this.approvedAppointments);
+    this.rejectedAppointmentsDataSource = new MatTableDataSource(this.rejectedAppointments);
+    this.completedAppointmentsDataSource = new MatTableDataSource(this.completedAppointments);
   }
 
   displayedColumns!: string[];
+  displayedColumnsForPendingAppointments!: string[];
+  displayedColumnsForApprovedAppointments!: string[];
+  displayedColumnsForCompletedAppointments!: string[];
+  displayedColumnsForRejectedAppointments!: string[];
 
   getAppointments() {
     this.login_details = window.localStorage.getItem('login_details');
@@ -91,9 +99,9 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
         console.log(this.user_id)
         this.appointments = data.appointments;
         this.tests = data.related_tests;
-        if (this.tests != "") {
+        // if (this.tests != "") {
           this.tests = JSON.parse(this.tests);
-        }
+        // }
         this.appointments = JSON.parse(this.appointments);
         this.dataSource.data = this.appointments;
         this.role=data.role
@@ -128,7 +136,7 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
         'delete',
         'update',
       ];
-      // this.isAdmin = true;
+      this.isAdmin = true;
       // this.displayedColumns = this.displayedColumnsForAdmin;
     }
     else if (this.role === "Doctor") {
@@ -152,17 +160,43 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
           this.completedAppointmentsDataSource.data = this.completedAppointments;
         }
       )
-      this.displayedColumns = [
-      // this.DisplayedColumnsForStaff = [
+      console.log(this.pendingAppointments, this.approvedAppointments, this.rejectedAppointments, this.completedAppointments)
+      this.displayedColumnsForPendingAppointments = [
         'appointment id',
         'customer id',
         'customer name',
         // 'date',
         'slot',
         'tests',
-        'status',
-        'update status'
+        'approve',
+        'reject'
       ];
+      this.displayedColumnsForApprovedAppointments = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'tests',
+        'completed',
+      ];
+      this.displayedColumnsForCompletedAppointments = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'tests',
+      ];
+      this.displayedColumnsForRejectedAppointments = [
+        'appointment id',
+        'customer id',
+        'customer name',
+        // 'date',
+        'slot',
+        'tests',
+      ];
+      this.isDoctor = true;
       // this.displayedColumns = this.DisplayedColumnsForStaff;
     }
   }
@@ -178,12 +212,20 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  getDisplayedColumns():string[] {
-    return this.columnDefinitions.filter(cd=>!cd.hide).map(cd=>cd.def);
+  getDisplayedColumns() {
+    this.setAppointmentsAccordingToUser();
   }
 
   approveAppointment(id: any) {
-    this.appointments_service.approveAppointment(id)
+    this.appointments_service.changeAppointmentStatus(id, "approved");
+  }
+
+  rejectAppointment(id: any) {
+    this.appointments_service.changeAppointmentStatus(id, "rejected");
+  }
+
+  completeAppointment(id: any) {
+    this.appointments_service.changeAppointmentStatus(id, "completed");
   }
 
   applyFilter(event: Event) {
