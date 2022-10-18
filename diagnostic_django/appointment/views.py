@@ -85,17 +85,21 @@ class AppointmentAPI(APIView):
                 # loggedin_user_id = request.data.get('id')
                 loggedin_user = User.objects.get(username = loggedin_username)
                 if loggedin_user.user_type == "admin":
+                    role='Admin'
                     appointments, appointments_tests_data = AppointmentsDetails.get_complete_appointments_data()
-                if loggedin_user.user_type == "staff":
+                elif loggedin_user.user_type == "staff":
                     staff = Staff.objects.get(user_id=loggedin_user.id)
+                    role=staff.designation
                     appointments = AppointmentsDetails.get_staff_related_appointments_data(staff.staff_id, staff.designation)
                     appointments_tests_data = ""
+                else:
+                    role="Customer"
             else:
                 appointments = Appointment.objects.get(appointment_id=id)
                 serializer = AppointmentSerializer(appointments, many=False)
         except Exception as error:
             return Response(str(error), status=500)
-        return Response({'appointments': appointments, 'related_tests': appointments_tests_data},
+        return Response({'appointments': appointments, 'related_tests': appointments_tests_data, 'role':role},
                         status=200)
 
     @staticmethod

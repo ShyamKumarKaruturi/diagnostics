@@ -29,6 +29,14 @@ export interface AppointmentData {
   status: string;
 }
 
+export interface AppointmentsStatusData{
+  appointment_id: string;
+  customer_id: string;
+  customer_name: string;
+  slot: string;
+  tests: string;
+}
+
 @Component({
   selector: 'app-display-appointments',
   templateUrl: './display-appointments.component.html',
@@ -36,13 +44,23 @@ export interface AppointmentData {
 })
 export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   appointments: any;
+  pendingAppointments: any=[];
+  approvedAppointments: any=[];
+  rejectedAppointments: any=[];
+  completedAppointments: any=[];
   tests: any;
   dataSource: MatTableDataSource<AppointmentData>;
+  pendingAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
+  approvedAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
+  rejectedAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
+  completedAppointmentsDataSource!: MatTableDataSource<AppointmentsStatusData>;
   login_details: any;
   user_id: any;
   user_type!: string;
   user_username!: string;
-  isAdmin: boolean= false;
+  isAdmin: boolean = false;
+  role!: string;
+  isDoctor: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -53,9 +71,6 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   }
 
   displayedColumns!: string[];
-  displayedColumnsForAdmin!: string[];
-  DisplayedColumnsForStaff!: string[];
-
 
   getAppointments() {
     this.login_details = window.localStorage.getItem('login_details');
@@ -81,7 +96,8 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
         }
         this.appointments = JSON.parse(this.appointments);
         this.dataSource.data = this.appointments;
-        console.log(this.appointments, this.tests)
+        this.role=data.role
+        console.log(this.appointments, this.tests,this.role)
         this.setAppointmentsAccordingToUser();
       },
       error: (err) => {
@@ -91,9 +107,9 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
   }
 
   setAppointmentsAccordingToUser() {
-    if (this.user_type === "admin") {
-      // this.displayedColumns = [
-      this.displayedColumnsForAdmin = [
+    if (this.role === "Admin") {
+      this.displayedColumns = [
+      // this.displayedColumnsForAdmin = [
         'appointment id',
         'customer id',
         'customer name',
@@ -112,20 +128,42 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
         'delete',
         'update',
       ];
-      this.isAdmin = true;
-      this.displayedColumns = this.displayedColumnsForAdmin;
+      // this.isAdmin = true;
+      // this.displayedColumns = this.displayedColumnsForAdmin;
     }
-    else if (this.user_type === "doctor") {
-      // this.displayedColumns = [
-      this.DisplayedColumnsForStaff = [
+    else if (this.role === "Doctor") {
+      this.appointments.map(
+        (appointment: any) => {
+          if (appointment.status === "pending") {
+            this.pendingAppointments.push(appointment)
+          }
+          else if (appointment.status === "approved") {
+            this.approvedAppointments.push(appointment)
+          }
+          else if (appointment.status === "rejected") {
+            this.rejectedAppointments.push(appointment)
+          }
+          else if (appointment.status === "completed") {
+            this.completedAppointments.push(appointment)
+          }
+          this.pendingAppointmentsDataSource.data = this.pendingAppointments;
+          this.approvedAppointmentsDataSource.data = this.approvedAppointments;
+          this.rejectedAppointmentsDataSource.data = this.rejectedAppointments;
+          this.completedAppointmentsDataSource.data = this.completedAppointments;
+        }
+      )
+      this.displayedColumns = [
+      // this.DisplayedColumnsForStaff = [
         'appointment id',
         'customer id',
         'customer name',
         // 'date',
         'slot',
+        'tests',
         'status',
+        'update status'
       ];
-      this.displayedColumns = this.DisplayedColumnsForStaff;
+      // this.displayedColumns = this.DisplayedColumnsForStaff;
     }
   }
 
@@ -133,9 +171,19 @@ export class DisplayAppointmentsComponent implements AfterViewInit, OnInit {
     this.getAppointments()
   }
 
+
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  getDisplayedColumns():string[] {
+    return this.columnDefinitions.filter(cd=>!cd.hide).map(cd=>cd.def);
+  }
+
+  approveAppointment(id: any) {
+    this.appointments_service.approveAppointment(id)
   }
 
   applyFilter(event: Event) {
