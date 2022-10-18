@@ -8,15 +8,9 @@ class User(AbstractUser):
     age = models.IntegerField(null=True, blank=True)
     address = models.TextField(max_length=200)
     pincode = models.CharField(max_length=8, null=True,blank=True)
-    is_employee = models.BooleanField(default=False)
-
+    user_type = models.CharField(max_length=10, default='admin')
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
-
-# class Admin(User):
-#     user_id = models.OneToOneField(User, on_delete=models.CASCADE , related_name='user')
-#     admin_id = models.CharField(max_length=10,primary_key=True)
-#     name  = models.CharField(max_length=100)
 
 
 class Customer(models.Model):

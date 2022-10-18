@@ -62,7 +62,7 @@ class Appointment(models.Model):
     )
     appointment_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
-    # branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     slot = models.CharField(choices=slots, max_length=100)
     tests = models.ManyToManyField(Test, blank=True, null=True, related_name="tests")

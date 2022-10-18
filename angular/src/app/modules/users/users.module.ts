@@ -22,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import {MatExpansionModule} from '@angular/material/expansion'
 
 // components
 import { BookAppointmentComponent } from './components/appointments/book-appointment/book-appointment.component';
@@ -91,9 +92,9 @@ import { DisplayTestsComponent } from './components/tests/display-tests/display-
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,
+    MatExpansionModule,
   ],
   bootstrap: [
-    DisplayAppointmentsComponent,
   ]
 })
 export class UsersModule { }

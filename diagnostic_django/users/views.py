@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from users.serializers import UserSerializer, CustomerSerializer, EmployeeSerializer
-from .models import User, Customer
+from .models import User, Customer, Staff
 from appointment.models import Branch
 from appointment.serializers import BranchSerializer
 from django.views.decorators.csrf import csrf_exempt
@@ -44,7 +44,9 @@ class RegisterCustomer(APIView):
             print(user)
             return Response({'message': "User  Exist"})
         except:
-            serializer = UserSerializer(data=request.data)
+            data = request.data
+            data['user_type'] = 'customer'
+            serializer = UserSerializer(data=data)
             print(serializer)
             if serializer.is_valid():
                 user = serializer.save()
@@ -67,7 +69,6 @@ class RegisterCustomer(APIView):
 
 class RegisterEmployee(APIView):
     def post(self, request):
-        print(request.data)
         username = request.data['username']
         try:
             user = User.objects.get(username=username)
@@ -79,7 +80,7 @@ class RegisterEmployee(APIView):
                       'last_name': request.data["last_name"], 'email': request.data['email'],
                       "mobile_number": request.data["mobile_number"], "age": int(request.data['age']),
                       'address': request.data['address'], "pincode": request.data['pincode'],
-                      "password": request.data['password'], "is_employee": True})
+                      "password": request.data['password'], "user_type": 'staff'})
             print(serializer)
             if serializer.is_valid():
                 user = serializer.save()
@@ -131,9 +132,16 @@ def loginUser(request):
         # access_token = create_access_token(user.username)
         # refresh_token = create_refresh_token(user.username)
         if user is not None:
-            login(request, user) #
+            login(request, user)
+            user_data = Customer.objects.filter(user_id=user)
+            if len(user_data)==0:
+                user_data = Staff.objects.filter(user_id=user)[0]
+                user_data = EmployeeSerializer(instance=user_data, many=False)
+            else:
+                user_data = user_data[0]
+                user_data = CustomerSerializer(instance=user_data, many=False)
             user = UserSerializer(instance=user, many=False)
-            return Response({'msg': "logged in", 'user': user.data}, status=200)
+            return Response({'msg': "logged in", 'user': user.data, 'user_data': user_data.data}, status=200)
         else:
             return Response({'msg': "password incorrect"})
 

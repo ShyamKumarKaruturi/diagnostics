@@ -10,4 +10,4 @@ urlpatterns = [
     path('logout/',logoutUser, name='logout')
 ]
 
-
+# chnges done

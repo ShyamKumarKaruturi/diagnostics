@@ -18,9 +18,10 @@ export class RegisterEmployeeComponent implements OnInit {
   branches : any
   branchIdList : string[] =[]
   user_data : any
+
   constructor(private http: HttpServiceService, private router: Router) { }
 
-
+  hide = true;
   employeeRegisterForm: FormGroup = new FormGroup({
     username: new FormControl(" ", Validators.required),
     first_name: new FormControl(" ", Validators.required),
@@ -33,7 +34,7 @@ export class RegisterEmployeeComponent implements OnInit {
     qualification: new FormControl(" ", Validators.required),
     salary: new FormControl(" ", Validators.required),
     years_of_experience: new FormControl(" ", Validators.required),
-    password: new FormControl(" ", Validators.minLength(8))
+    password: new FormControl(" ", [Validators.minLength(8), Validators.required])
   })
 
 
@@ -51,7 +52,6 @@ export class RegisterEmployeeComponent implements OnInit {
   }
 
   submitRegister() {
-    // console.log(this.customerRegisterForm.value);
     if (this.employeeRegisterForm.valid && this.designationControl.valid && this.branchControl.valid ) {
       this.user_data = { ...this.employeeRegisterForm.value  ,"branch": this.branchControl.value, 'designation': this.designationControl.value}
       this.http.registerEmployee(this.user_data).subscribe(data => {

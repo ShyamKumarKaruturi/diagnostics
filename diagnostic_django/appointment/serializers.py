@@ -29,7 +29,8 @@ class ReviewSerializer(serializers.ModelSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Appointment
-        fields = ['user', 'slot', 'doctor_id', 'nurse_id', 'lab_technician', 'sample_collector', 'status']
+        fields = ["appointment_id",'user','branch','slot','doctor_id','nurse_id','lab_technician','sample_collector','status','date']
+
 
 
 class BillSerializer(serializers.ModelSerializer):
